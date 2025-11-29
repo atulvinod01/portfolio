@@ -185,6 +185,7 @@ nav ul li a:hover {
 
 .highlight {
     color: var(--accent-color);
+    font-size: 1.5rem;
 }
 
 .typing-text {
