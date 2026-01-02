@@ -6,7 +6,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Atul Vinod | Building Analytical Solutions</title>
     <meta name="description"
-        content="Atul Vinod's Portfolio - Computer Science Graduate specializing in Software Development">
+        content="Atul Vinod's Portfolio - MBA Student & Computer Science Graduate specializing in Analytics, Machine Learning, and Cloud Platforms.">
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="Atul Vinod | Building Analytical Solutions">
+    <meta property="og:description"
+        content="MBA Student & Computer Science Graduate specializing in Analytics, Machine Learning, and Cloud Platforms.">
+    <meta property="og:type" content="website">
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -35,10 +41,9 @@
             <nav>
                 <ul>
                     <li><a href="#home">Home</a></li>
-                    <li><a href="#expertise">Expertise</a></li>
-                    <li><a href="#skills">Skills</a></li>
+                    <li><a href="#about">About</a></li>
                     <li><a href="#projects">Projects</a></li>
-                    <li><a href="#certifications">Certifications</a></li>
+                    <li><a href="#skills">Skills</a></li>
                     <li><a href="#contact">Contact</a></li>
                 </ul>
             </nav>
@@ -49,14 +54,20 @@
         <!-- Home Section -->
         <section id="home" class="home">
             <div class="home-content fade-up">
+                <div class="status-badge">
+                    <span class="status-dot"></span>
+                    Open to Analytics & Data Science Opportunities
+                </div>
                 <p class="highlight">Hello, I'm</p>
                 <h2>Atul Vinod</h2>
                 <div class="typing-text"
-                    data-text="MBA Student & Computer Science Graduate specializing in Analytics, Machine Learning, and Cloud Platforms.">
-                    MBA Student & Computer Science Graduate specializing in Analytics, Machine Learning, and Cloud
-                    Platforms.
+                    data-text="I build data-driven solutions that transform complex problems into actionable insights.">
+                    I build data-driven solutions that transform complex problems into actionable insights.
                 </div>
-                <a href="#contact" class="cta-button">Get in Touch</a>
+                <div class="hero-cta">
+                    <a href="#projects" class="cta-button">View My Work</a>
+                    <a href="#contact" class="cta-button-secondary">Get in Touch</a>
+                </div>
             </div>
             <div class="scroll-down">
                 <span></span>
@@ -65,28 +76,160 @@
             </div>
         </section>
 
-        <!-- Expertise Section -->
-        <section id="expertise" class="expertise">
+        <!-- About Section -->
+        <section id="about" class="about">
             <div class="section-container">
-                <h2 class="section-title fade-up">Expertise</h2>
-                <div class="expertise-grid">
-                    <div class="expertise-card glass-card fade-up delay-100">
-                        <div class="icon">📊</div>
-                        <h3>Data Analytics & Visualization</h3>
-                        <p>Turning complex datasets into actionable business insights using Python, SQL, and advanced
-                            visualization tools.</p>
+                <h2 class="section-title fade-up">About Me</h2>
+                <div class="about-content fade-up">
+                    <div class="about-text">
+                        <p class="about-intro">
+                            I'm an <strong>MBA student with a Computer Science background</strong>, passionate about
+                            bridging the gap between technical analytics and business strategy.
+                        </p>
+                        <p>
+                            My journey started with building software, but I quickly realized the real impact comes from
+                            turning data into decisions. Whether it's optimizing investment portfolios, detecting fraud
+                            patterns, or uncovering customer insights—I love solving problems that matter.
+                        </p>
+                        <p>
+                            Currently, I'm focused on <strong>machine learning applications in finance</strong> and
+                            exploring how AI can make enterprise risk management more accessible to decision-makers.
+                        </p>
+                        <p class="about-personal">
+                            When I'm not diving into datasets, you'll find me exploring new tech, reading about
+                            behavioral economics, or experimenting with side projects that probably won't make money but
+                            will definitely teach me something.
+                        </p>
                     </div>
-                    <div class="expertise-card glass-card fade-up delay-200">
-                        <div class="icon">🤖</div>
-                        <h3>Machine Learning Solutions</h3>
-                        <p>Building predictive models and fraud detection systems to identify risks and optimize
-                            decision-making.</p>
+                    <div class="credentials">
+                        <h4>Credentials</h4>
+                        <div class="credential-badges">
+                            <div class="credential-badge">
+                                <img src="public/logos/aws.svg" alt="AWS">
+                                <span>AWS Cloud Practitioner</span>
+                            </div>
+                            <div class="credential-badge">
+                                <i class="fas fa-file-excel"></i>
+                                <span>Microsoft Excel Associate</span>
+                            </div>
+                            <div class="credential-badge">
+                                <i class="fab fa-google"></i>
+                                <span>Google AI Essentials</span>
+                            </div>
+                        </div>
                     </div>
-                    <div class="expertise-card glass-card fade-up delay-300">
-                        <div class="icon">🔒</div>
-                        <h3>Secure Web Development</h3>
-                        <p>Developing decentralized and secure web applications with modern frameworks like Flask and
-                            Blockchain technology.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Projects Section -->
+        <section id="projects" class="projects">
+            <div class="section-container">
+                <h2 class="section-title fade-up">Featured Projects</h2>
+
+                <!-- Featured Case Study -->
+                <div class="featured-project glass-card fade-up">
+                    <div class="featured-badge">✦ Featured Case Study</div>
+                    <div class="featured-content">
+                        <div class="featured-image">
+                            <img src="public/risk_management.png" alt="Enterprise Risk Management Dashboard">
+                        </div>
+                        <div class="featured-details">
+                            <h3>Enterprise Risk Management</h3>
+                            <div class="tech-stack">
+                                <span class="tech-tag">Python</span>
+                                <span class="tech-tag">Streamlit</span>
+                                <span class="tech-tag">Hybrid AI</span>
+                                <span class="tech-tag">SHAP</span>
+                            </div>
+
+                            <div class="case-study">
+                                <div class="case-section">
+                                    <h4>The Problem</h4>
+                                    <p>Financial institutions struggle to separate genuine fraud signals from
+                                        operational noise, leading to alert fatigue and missed threats.</p>
+                                </div>
+                                <div class="case-section">
+                                    <h4>My Approach</h4>
+                                    <p>Built a hybrid anomaly detection system combining statistical methods with ML
+                                        classifiers, then translated technical scores into business-readable "Risk
+                                        Drivers" using SHAP explainability.</p>
+                                </div>
+                                <div class="case-section">
+                                    <h4>The Results</h4>
+                                    <ul class="results-list">
+                                        <li><strong>40% reduction</strong> in financial risk exposure</li>
+                                        <li><strong>Accelerated security audits</strong> with executive-ready dashboards
+                                        </li>
+                                        <li><strong>Actionable insights</strong> replacing black-box predictions</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="project-footer">
+                                <a href="https://github.com/atulvinod01/EnterpriseRiskManagement" target="_blank"
+                                    class="project-link">
+                                    <i class="fab fa-github"></i> View on GitHub
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Other Projects Grid -->
+                <div class="projects-grid">
+                    <div class="project-card glass-card fade-up">
+                        <div class="project-image">
+                            <img src="public/portfolio_optimization.png" alt="Portfolio Optimization Dashboard">
+                        </div>
+                        <div class="project-content">
+                            <div class="project-header">
+                                <h3>Quantitative Portfolio Optimization</h3>
+                                <div class="tech-stack">
+                                    <span class="tech-tag">Python</span>
+                                    <span class="tech-tag">Streamlit</span>
+                                    <span class="tech-tag">NumPy</span>
+                                    <span class="tech-tag">yfinance</span>
+                                </div>
+                            </div>
+                            <div class="project-body">
+                                <p>Monte Carlo simulation engine for maximizing Sharpe Ratio and analyzing VaR. Features
+                                    real-time data fetching and interactive Efficient Frontier visualization.</p>
+                            </div>
+                            <div class="project-footer">
+                                <a href="https://github.com/atulvinod01/QuantitativePortfolioOptimization"
+                                    target="_blank" class="project-link">
+                                    <i class="fab fa-github"></i> View Project
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="project-card glass-card fade-up delay-100">
+                        <div class="project-image">
+                            <img src="public/ecommerce_analysis.png" alt="E-Commerce Analysis Dashboard">
+                        </div>
+                        <div class="project-content">
+                            <div class="project-header">
+                                <h3>E-Commerce Strategic Analysis</h3>
+                                <div class="tech-stack">
+                                    <span class="tech-tag">Python</span>
+                                    <span class="tech-tag">SQLite</span>
+                                    <span class="tech-tag">Pandas</span>
+                                    <span class="tech-tag">Seaborn</span>
+                                </div>
+                            </div>
+                            <div class="project-body">
+                                <p>RFM segmentation and cohort analysis to identify "Champions" and "At Risk" customers.
+                                    Transforms raw transactions into actionable retention strategies.</p>
+                            </div>
+                            <div class="project-footer">
+                                <a href="https://github.com/atulvinod01/E-CommerceSalesAnalysis" target="_blank"
+                                    class="project-link">
+                                    <i class="fab fa-github"></i> View Project
+                                </a>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -95,10 +238,10 @@
         <!-- Skills Section -->
         <section id="skills" class="skills">
             <div class="section-container">
-                <h2 class="section-title fade-up">Skills</h2>
+                <h2 class="section-title fade-up">Skills & Tools</h2>
                 <div class="skills-wrapper">
                     <div class="skill-category fade-up">
-                        <h3>Data Tools & Programming</h3>
+                        <h3>Data & Analytics</h3>
                         <div class="skill-grid">
                             <div class="skill-card glass-card">
                                 <img src="public/logos/python.svg" alt="Python">
@@ -113,6 +256,15 @@
                                 <span>NumPy</span>
                             </div>
                             <div class="skill-card glass-card">
+                                <img src="public/logos/mysql.svg" alt="SQL">
+                                <span>SQL</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="skill-category fade-up">
+                        <h3>Visualization & ML</h3>
+                        <div class="skill-grid">
+                            <div class="skill-card glass-card">
                                 <img src="public/logos/matplotlib.png" alt="Matplotlib">
                                 <span>Matplotlib</span>
                             </div>
@@ -121,184 +273,42 @@
                                 <span>Seaborn</span>
                             </div>
                             <div class="skill-card glass-card">
-                                <img src="public/logos/mysql.svg" alt="SQL">
-                                <span>SQL</span>
+                                <div class="text-icon">🤖</div>
+                                <span>Scikit-learn</span>
                             </div>
                             <div class="skill-card glass-card">
                                 <div class="text-icon">📊</div>
-                                <span>Excel</span>
+                                <span>Streamlit</span>
                             </div>
                         </div>
                     </div>
                     <div class="skill-category fade-up">
-                        <h3>Machine Learning & Modeling</h3>
-                        <div class="skill-grid">
-                            <div class="skill-card glass-card">
-                                <div class="text-icon">🤖</div>
-                                <span>Predictive Modeling</span>
-                            </div>
-                            <div class="skill-card glass-card">
-                                <div class="text-icon">⚙️</div>
-                                <span>Feature Engineering</span>
-                            </div>
-                            <div class="skill-card glass-card">
-                                <div class="text-icon">📈</div>
-                                <span>Model Evaluation</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="skill-category fade-up">
-                        <h3>Cloud</h3>
+                        <h3>Cloud & Infrastructure</h3>
                         <div class="skill-grid">
                             <div class="skill-card glass-card">
                                 <img src="public/logos/aws.svg" alt="AWS">
                                 <span>AWS</span>
                             </div>
+                            <div class="skill-card glass-card">
+                                <div class="text-icon">🐙</div>
+                                <span>Git</span>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- Projects Section -->
-        <section id="projects" class="projects">
+        <!-- Testimonial Section -->
+        <section id="testimonial" class="testimonial">
             <div class="section-container">
-                <h2 class="section-title fade-up">Projects</h2>
-                <div class="projects-grid">
-                    <div class="project-card glass-card fade-up">
-                        <div class="project-header">
-                            <h3>Quantitative Portfolio Optimization</h3>
-                            <div class="tech-stack">
-                                <span class="tech-tag">Python</span>
-                                <span class="tech-tag">Streamlit</span>
-                                <span class="tech-tag">NumPy</span>
-                                <span class="tech-tag">Pandas</span>
-                                <span class="tech-tag">yfinance</span>
-                            </div>
-                        </div>
-                        <div class="project-body">
-                            <ul class="project-details">
-                                <li>Developed a comprehensive portfolio optimization engine using Monte Carlo
-                                    simulations to maximize Sharpe Ratio and analyze risk metrics (VaR).</li>
-                                <li>Integrated real-time financial data fetching via yfinance and built an interactive
-                                    Streamlit dashboard to visualize the Efficient Frontier and optimal asset
-                                    allocation.</li>
-                            </ul>
-                        </div>
-                        <div class="project-footer">
-                            <a href="https://github.com/atulvinod01/QuantitativePortfolioOptimization" target="_blank"
-                                class="project-link">
-                                <i class="fab fa-github"></i> View Project
-                            </a>
-                        </div>
-                    </div>
-                    <div class="project-card glass-card fade-up delay-100">
-                        <div class="project-header">
-                            <h3>Enterprise Risk Management</h3>
-                            <div class="tech-stack">
-                                <span class="tech-tag">Python</span>
-                                <span class="tech-tag">Streamlit</span>
-                                <span class="tech-tag">Hybrid AI</span>
-                            </div>
-                        </div>
-                        <div class="project-body">
-                            <ul class="project-details">
-                                <li>Designed a fraud detection framework that reduced financial risk exposure by 40%,
-                                    utilizing hybrid anomaly detection to filter high-probability threats from standard
-                                    operational noise.</li>
-                                <li>Built an executive decision-support dashboard using Streamlit, translating technical
-                                    risk metrics into actionable "Risk Drivers" (via SHAP) to accelerate C-suite
-                                    security audits.</li>
-                            </ul>
-                        </div>
-                        <div class="project-footer">
-                            <a href="https://github.com/atulvinod01/EnterpriseRiskManagement" target="_blank"
-                                class="project-link">
-                                <i class="fab fa-github"></i> View Project
-                            </a>
-                        </div>
-                    </div>
-                    <div class="project-card glass-card fade-up delay-200">
-                        <div class="project-header">
-                            <h3>Insider Threat Detection</h3>
-                            <div class="tech-stack">
-                                <span class="tech-tag">Machine Learning</span>
-                                <span class="tech-tag">Unsupervised Learning</span>
-                            </div>
-                        </div>
-                        <div class="project-body">
-                            <ul class="project-details">
-                                <li>Designed and implemented an unsupervised machine learning model (clustering, anomaly
-                                    detection) to identify abnormal user behavior and insider threats.</li>
-                                <li>Performed data preprocessing and feature engineering to improve model accuracy and
-                                    support informed security decision-making.</li>
-                            </ul>
-                        </div>
-                        <div class="project-footer">
-                            <a href="https://github.com/atulvinod01/InsiderThreatDetection" target="_blank"
-                                class="project-link">
-                                <i class="fab fa-github"></i> View Project
-                            </a>
-                        </div>
-                    </div>
-                    <div class="project-card glass-card fade-up delay-300">
-                        <div class="project-header">
-                            <h3>Decentralized Web Authentication</h3>
-                            <div class="tech-stack">
-                                <span class="tech-tag">Blockchain</span>
-                                <span class="tech-tag">Flask</span>
-                                <span class="tech-tag">IPFS</span>
-                            </div>
-                        </div>
-                        <div class="project-body">
-                            <ul class="project-details">
-                                <li>Developed a blockchain-based authentication system using Flask, smart contracts, and
-                                    IPFS to enhance data security and transparency.</li>
-                                <li>Built a decentralized identity-validation workflow that reduced verification time
-                                    and improved reliability in user authentication.</li>
-                            </ul>
-                        </div>
-                        <div class="project-footer">
-                            <a href="https://github.com/atulvinod01/DecentralizedWebAuthentication" target="_blank"
-                                class="project-link">
-                                <i class="fab fa-github"></i> View Project
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Certifications Section -->
-        <section id="certifications" class="certifications">
-            <div class="section-container">
-                <h2 class="section-title fade-up">Certifications</h2>
-                <div class="cert-grid">
-                    <div class="cert-card glass-card fade-up">
-                        <div class="cert-header">
-                            <h3>Microsoft Office Specialist: Excel Associate (Office 2019)</h3>
-                            <span class="date">Oct 2025 – Oct 2030</span>
-                        </div>
-                        <p>Certified in Microsoft Excel with strong analytical skills, using advanced formulas,
-                            PivotTables, and data visualization tools to clean, organize, and interpret data
-                            effectively.</p>
-                    </div>
-                    <div class="cert-card glass-card fade-up delay-100">
-                        <div class="cert-header">
-                            <h3>AWS Certified Cloud Practitioner</h3>
-                            <span class="date">Feb 2025 – Feb 2028</span>
-                        </div>
-                        <p>Demonstrated proficiency in AWS cloud infrastructure, security, pricing models, and best
-                            practices for scalable solutions.</p>
-                    </div>
-                    <div class="cert-card glass-card fade-up delay-200">
-                        <div class="cert-header">
-                            <h3>Google AI Essentials Certificate</h3>
-                            <span class="date">Jun 2024</span>
-                        </div>
-                        <p>Developed practical understanding of AI fundamentals and ethical implementation for
-                            data-driven applications.</p>
-                    </div>
+                <div class="testimonial-card glass-card fade-up">
+                    <div class="quote-icon"><i class="fas fa-quote-left"></i></div>
+                    <blockquote>
+                        "The best analysts don't just crunch numbers—they translate complexity into clarity. That's
+                        where real business value is created."
+                    </blockquote>
+                    <div class="quote-attribution">— Philosophy I work by</div>
                 </div>
             </div>
         </section>
@@ -306,12 +316,12 @@
         <!-- Contact Section -->
         <section id="contact" class="contact">
             <div class="section-container">
-                <h2 class="section-title fade-up">Get In Touch</h2>
+                <h2 class="section-title fade-up">Let's Connect</h2>
                 <div class="contact-content fade-up">
-                    <p class="contact-text">I'm currently looking for new opportunities. Whether you have a question or
-                        just want to say hi, I'll try my best to get back to you!</p>
+                    <p class="contact-text">I'm always interested in hearing about new opportunities, interesting
+                        projects, or just connecting with fellow data enthusiasts.</p>
                     <div class="contact-links">
-                        <a href="mailto:atulvinod2001@gmail.com" class="contact-btn">
+                        <a href="mailto:atulvinod2001@gmail.com" class="contact-btn primary">
                             <i class="fas fa-envelope"></i> Say Hello
                         </a>
                         <a href="https://www.linkedin.com/in/atul-vinod-9083b5225" target="_blank" class="contact-btn">
@@ -327,7 +337,10 @@
     </main>
 
     <footer>
-        <p>&copy; 2025 Atul Vinod. All rights reserved.</p>
+        <p>Designed & Built by Atul Vinod</p>
+        <p class="footer-credentials">AWS Certified Cloud Practitioner · Microsoft Office Specialist · Google AI
+            Certified</p>
+        <p class="copyright">&copy; 2025 All rights reserved.</p>
     </footer>
 
     <div class="back-to-top">
