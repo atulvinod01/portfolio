@@ -10,504 +10,654 @@
 <meta property="og:type" content="website">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&display=swap" rel="stylesheet">
 <style>
 :root {
-  --paper: #EEF0F3;
-  --paper-2: #E1E5EB;
-  --ink: #172433;
-  --ink-2: #22324A;
-  --ink-soft: #4A5869;
-  --on-ink: #EEF0F3;
-  --on-ink-soft: #AEB8C6;
-  --accent: #2547D0;
-  --accent-on-ink: #7F9BFF;
-  --gain: #2E9E6A;
-  --loss: #D24B3E;
-  --m: clamp(16px, 4vw, 48px);
-  --gap: clamp(96px, 14vw, 200px);
-  --ease: cubic-bezier(.2, .7, .2, 1);
+  --bg: #0B0B0B;
+  --fg: #EDEBE6;
+  --mute: #8C8A84;
+  --line: #2A2A28;
+  --accent: #FF4D00;
+  --gain: #1F9D62;
+  --loss: #E0412F;
+  --m: clamp(16px, 2.2vw, 32px);
+  --ease: cubic-bezier(.7, 0, .2, 1);
+  --out: cubic-bezier(.2, .8, .2, 1);
 }
 * { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; }
+html { background: var(--bg); }
+html.lenis, html.lenis body { height: auto; }
+.lenis.lenis-smooth { scroll-behavior: auto !important; }
+.lenis.lenis-stopped { overflow: hidden; }
 body {
-  background: var(--paper); color: var(--ink);
-  font: 400 18px/1.55 "Schibsted Grotesk", system-ui, sans-serif;
+  background: var(--bg); color: var(--fg);
+  font: 400 17px/1.5 "Archivo", system-ui, sans-serif;
+  font-variation-settings: "wdth" 100;
   -webkit-font-smoothing: antialiased;
 }
 a { color: inherit; }
-:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
-.wrap { padding-inline: var(--m); max-width: 1440px; margin-inline: auto; }
+button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
+::selection { background: var(--accent); color: #000; }
+.cond { font-variation-settings: "wdth" 62; font-weight: 800; text-transform: uppercase; letter-spacing: -.01em; }
 
-/* nav */
-.nav { display: flex; align-items: center; gap: 32px; padding-block: 20px; }
-.nav .name { font-weight: 800; text-decoration: none; margin-right: auto; }
-.nav a:not(.name):not(.btn) { text-decoration: none; color: var(--ink-soft); }
-.nav a:not(.name):not(.btn):hover { color: var(--ink); }
+/* corner HUD */
+.hud { position: fixed; inset: 0; pointer-events: none; z-index: 20; mix-blend-mode: difference; color: #fff; font-size: 14px; line-height: 1.35; }
+.hud > * { position: absolute; pointer-events: auto; }
+.hud .tl { top: var(--m); left: var(--m); }
+.hud .tl a { text-decoration: none; font-weight: 700; }
+.hud .tr { top: var(--m); right: var(--m); display: flex; gap: 24px; }
+.hud .tr a { text-decoration: none; }
+.hud .tr a:hover { text-decoration: underline; text-underline-offset: 4px; }
+.hud .bl { bottom: var(--m); left: var(--m); }
+.hud .br { bottom: var(--m); right: var(--m); }
+.hud .dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #888; margin-right: 8px; vertical-align: 1px; }
+.hud .dot.open { background: #00FF8A; box-shadow: 0 0 0 0 #00FF8A; animation: ping 2s infinite; }
+@keyframes ping { 70% { box-shadow: 0 0 0 8px transparent; } }
+.hud .tnum { font-variant-numeric: tabular-nums; }
 
-.btn {
-  display: inline-block; padding: 14px 24px; border-radius: 999px; border: 0;
-  background: var(--accent); color: #fff; font-family: inherit; font-size: 17px; font-weight: 500; line-height: 1;
-  text-decoration: none; cursor: pointer; transition: transform .15s var(--ease), background .15s;
-}
-.btn:hover { background: #1B38AE; }
-.btn:active { transform: scale(.97); }
-.btn.quiet { background: var(--paper-2); color: var(--ink); }
-.btn.quiet:hover { background: #D3D9E1; }
+/* loader */
+.loader { display: none; }
+.js .loader { display: block; position: fixed; inset: 0; z-index: 50; background: var(--bg); clip-path: inset(0 0 0 0); }
+.loader .count { position: absolute; left: var(--m); bottom: var(--m); font-size: clamp(6rem, 26vw, 24rem); line-height: .78; color: var(--accent); font-variant-numeric: tabular-nums; }
+.loader .lbl { position: absolute; right: var(--m); bottom: var(--m); font-size: 14px; color: var(--mute); text-align: right; }
+.loader .bar { position: absolute; left: 0; top: 0; height: 3px; width: 100%; background: var(--accent); transform-origin: left; transform: scaleX(0); }
 
 /* hero */
-.hero h1 {
-  font-size: clamp(4rem, 15.5vw, 14.5rem); font-weight: 800; line-height: .9;
-  letter-spacing: -.045em; margin: clamp(24px, 5vw, 64px) 0 clamp(32px, 4vw, 56px) -.05em;
+.hero { position: relative; height: 100svh; min-height: 640px; overflow: hidden; }
+.hero canvas { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 2; touch-action: pan-y; cursor: grab; }
+.hero canvas:active { cursor: grabbing; }
+.hero .name {
+  position: absolute; left: var(--m); right: var(--m); bottom: calc(var(--m) + 28px); z-index: 1;
+  font-size: 21.4vw; line-height: .78; color: var(--accent); white-space: nowrap; margin-left: -.02em;
 }
-.hero-grid { display: grid; grid-template-columns: 5fr 7fr; gap: clamp(32px, 5vw, 80px); align-items: start; }
-.lede { font-size: clamp(1.4rem, 2.2vw, 2rem); line-height: 1.25; letter-spacing: -.01em; font-weight: 500; max-width: 22ch; }
-.hero .sub { margin-top: 24px; color: var(--ink-soft); max-width: 40ch; }
-.hero .actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 32px; }
+.name .ch { display: inline-block; }
+.hero .intro { position: absolute; z-index: 3; left: var(--m); top: 18vh; max-width: 25ch; font-size: clamp(1.25rem, 1.9vw, 1.75rem); line-height: 1.2; font-weight: 500; pointer-events: none; }
+.hero .sim { position: absolute; z-index: 3; right: var(--m); top: 18vh; width: min(300px, 40vw); font-size: 14px; }
+.sim dl { display: grid; grid-template-columns: 1fr auto; gap: 6px 16px; margin-bottom: 18px; }
+.sim dt { color: var(--mute); }
+.sim dd { font-variant-numeric: tabular-nums; text-align: right; }
+.sim dd.big { font-size: 2.4rem; line-height: 1; font-weight: 700; color: var(--fg); }
+.sim .w { color: var(--mute); margin-bottom: 18px; }
+.sim .w b { color: var(--fg); font-weight: 500; }
+.pill { display: inline-flex; align-items: center; gap: 10px; padding: 12px 20px; border-radius: 999px; background: var(--fg); color: var(--bg); font-weight: 600; transition: background .25s, color .25s, transform .2s var(--out); }
+.pill:hover { background: var(--accent); color: #000; }
+.pill:active { transform: scale(.96); }
+.sim .hint { margin-top: 12px; color: var(--mute); }
+.axis-l { position: absolute; z-index: 3; font-size: 12px; color: var(--mute); pointer-events: none; white-space: nowrap; transform: translate(-50%, -50%); }
+.best-l { position: absolute; z-index: 3; font-size: 13px; font-weight: 700; color: var(--accent); pointer-events: none; white-space: nowrap; transform: translate(14px, -50%); }
 
-.frontier { background: var(--paper-2); padding: clamp(16px, 2vw, 28px); }
-.frontier svg { width: 100%; height: auto; display: block; }
-.frontier .axis { font-size: 13px; fill: var(--ink-soft); }
-.frontier .grid-line { stroke: #CBD2DB; stroke-width: 1; }
-.frontier .pt { fill: var(--ink); fill-opacity: .28; }
-.frontier .edge { fill: none; stroke: var(--accent); stroke-width: 2.5; }
-.frontier .best { fill: var(--accent); stroke: var(--paper-2); stroke-width: 3; }
-.frontier .best-label { font-size: 14px; font-weight: 700; fill: var(--accent); }
-.fig-foot { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 16px; margin-top: 16px; }
-.readout { display: grid; grid-template-columns: repeat(3, auto); gap: 4px 28px; }
-.readout dt { font-size: 14px; color: var(--ink-soft); }
-.readout dd { font-size: 1.6rem; font-weight: 700; letter-spacing: -.02em; }
-.weights { margin-top: 12px; font-size: 15px; color: var(--ink-soft); }
-.weights b { color: var(--ink); font-weight: 500; }
-.fig-note { font-size: 14px; color: var(--ink-soft); margin-top: 12px; max-width: 60ch; }
+/* sections */
+section { position: relative; }
+.wrap { padding-inline: var(--m); }
+.sec-head { display: flex; justify-content: space-between; align-items: baseline; border-bottom: 1px solid var(--line); padding-bottom: 14px; margin-bottom: 8px; font-size: 14px; color: var(--mute); }
+.sec-head h2 { font-size: 14px; font-weight: 500; color: var(--fg); }
 
-/* projects field */
-.projects { background: var(--ink); color: var(--on-ink); margin-top: var(--gap); padding-block: clamp(80px, 10vw, 160px); }
-.projects h2, .about h2, .tools h2, .contact h2 {
-  font-size: clamp(2.8rem, 7vw, 6rem); font-weight: 800; line-height: .95; letter-spacing: -.04em;
-}
-.proj { display: grid; grid-template-columns: repeat(12, 1fr); gap: clamp(24px, 4vw, 64px); margin-top: clamp(80px, 10vw, 160px); }
-.proj h3 { font-size: clamp(1.8rem, 3.4vw, 3rem); font-weight: 700; line-height: 1.02; letter-spacing: -.03em; margin-bottom: 20px; }
-.proj p { color: var(--on-ink); max-width: 56ch; }
-.proj p + p { margin-top: 14px; }
-.proj .stack { margin-top: 20px; font-size: 15px; color: var(--on-ink-soft); }
-.proj .link { display: inline-block; margin-top: 20px; color: var(--accent-on-ink); font-weight: 500; text-underline-offset: 4px; }
-.proj .link:hover { color: #fff; }
-.proj .text { grid-column: span 5; }
-.proj .figure { grid-column: span 7; }
-.proj.flip .text { order: 2; }
-.panel { background: var(--ink-2); padding: clamp(20px, 2.4vw, 36px); }
-.cap { font-size: 14px; color: var(--on-ink-soft); margin-top: 14px; }
+/* work index */
+.work { padding-top: clamp(120px, 16vw, 240px); }
+.index { list-style: none; }
+.index li { border-bottom: 1px solid var(--line); }
+.row { width: 100%; display: grid; grid-template-columns: 1fr auto; align-items: end; gap: 16px; padding: 14px 0 10px; text-align: left; transition: opacity .4s var(--out); }
+.row .t { font-size: clamp(3rem, 9.6vw, 9.5rem); line-height: .82; display: block; transition: transform .6s var(--out), color .3s; }
+.row .m { font-size: 14px; color: var(--mute); text-align: right; align-self: center; }
+.index:hover .row { opacity: .22; }
+.index .row:hover, .index .row:focus-visible { opacity: 1; }
+.row:hover .t, .row:focus-visible .t { transform: translateX(clamp(12px, 2vw, 40px)); color: var(--accent); }
 
-/* scanner */
-.pipeline { list-style: none; counter-reset: none; display: grid; gap: 6px; }
-.pipeline li { display: grid; grid-template-columns: 1fr auto; gap: 16px; padding: 12px 16px; background: rgba(238,240,243,.05); }
-.pipeline li span:last-child { color: var(--on-ink-soft); font-size: 15px; text-align: right; }
-.pipeline li.out { background: var(--accent); color: #fff; }
-.pipeline li.out span:last-child { color: #DCE3FF; }
-.run { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 28px; }
-.run div { background: rgba(238,240,243,.05); padding: 16px; }
-.run b { display: block; font-size: clamp(1.8rem, 3vw, 2.6rem); font-weight: 800; letter-spacing: -.03em; line-height: 1.1; }
-.run .off { color: #F08A7F; }
-.run span { font-size: 14px; color: var(--on-ink-soft); }
-.rules { margin-top: 20px; display: grid; grid-template-columns: auto 1fr; gap: 6px 20px; font-size: 15px; }
-.rules dt { color: var(--on-ink-soft); }
+.preview { position: fixed; left: 0; top: 0; z-index: 15; width: 440px; pointer-events: none; background: var(--fg); color: var(--bg); padding: 20px; opacity: 0; transform: translate(-999px, -999px) scale(.9); transition: opacity .3s; }
+.preview.on { opacity: 1; }
+.preview .open { position: absolute; top: -18px; right: -18px; width: 72px; height: 72px; border-radius: 50%; background: var(--accent); color: #000; display: grid; place-items: center; font-size: 14px; font-weight: 700; }
+@media (hover: none) { .preview { display: none; } }
 
-/* risk drivers */
-.case { display: grid; gap: 18px; margin-top: 8px; }
-.case h4 { font-size: 15px; font-weight: 700; color: var(--accent-on-ink); margin-bottom: 4px; }
-.drivers { display: grid; gap: 18px; }
-.drivers .row { display: grid; grid-template-columns: 11rem 1fr; gap: 16px; align-items: center; font-size: 16px; }
-.drivers .bar { height: 28px; background: var(--loss); transform-origin: left; }
-.drivers .bar.down { background: var(--gain); }
-.flag { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 28px; gap: 16px; flex-wrap: wrap; }
-.flag strong { font-size: clamp(1.4rem, 2.4vw, 2rem); letter-spacing: -.02em; }
-.flag span { color: #F08A7F; font-weight: 700; }
+/* visuals (light context) */
+.v { font-size: 14px; color: #0B0B0B; }
+.v .pipe { list-style: none; display: grid; gap: 3px; }
+.v .pipe li { display: flex; justify-content: space-between; gap: 12px; padding: 7px 10px; background: #DEDBD4; }
+.v .pipe li span + span { color: #5B5953; text-align: right; }
+.v .pipe li.out { background: var(--accent); }
+.v .pipe li.out span + span { color: #000; }
+.v .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3px; margin-top: 3px; }
+.v .stats div { background: #0B0B0B; color: var(--fg); padding: 10px; }
+.v .stats b { display: block; font-size: 1.9rem; line-height: 1; font-variation-settings: "wdth" 62; font-weight: 800; text-transform: uppercase; }
+.v .stats .off { color: #FF6A4D; }
+.v .stats span { color: #9C9A94; font-size: 12px; }
+.v .flag { display: flex; justify-content: space-between; margin-bottom: 14px; font-weight: 700; }
+.v .flag span { color: var(--loss); }
+.v .drv { display: grid; gap: 10px; }
+.v .drv div { display: grid; grid-template-columns: 9.5rem 1fr; gap: 10px; align-items: center; }
+.v .drv i { display: block; height: 20px; background: var(--loss); }
+.v .drv i.dn { background: var(--gain); }
+.v .rfm { display: grid; grid-template-columns: 1.2rem repeat(5, 1fr); grid-auto-rows: 44px; gap: 3px; font-size: 12px; }
+.v .rfm div { padding: 5px; display: flex; align-items: flex-end; line-height: 1.1; font-weight: 600; }
+.v .rfm .ax { color: #5B5953; font-weight: 400; justify-content: center; align-items: center; padding: 0; }
+.v .rfm .ch { background: var(--gain); color: #fff; }
+.v .rfm .lo { background: #4F8F6E; color: #fff; }
+.v .rfm .nw { background: #0B0B0B; color: var(--fg); }
+.v .rfm .md { background: #CFCBC2; }
+.v .rfm .rk { background: var(--accent); }
+.v .rfm .ls { background: #DEDBD4; color: #77746D; }
+.v svg { display: block; width: 100%; height: auto; }
+.v .cap { margin-top: 10px; color: #5B5953; font-size: 13px; }
 
-/* portfolio */
-.proj.wide .text { grid-column: 1 / span 7; }
-.proj.wide aside { grid-column: 9 / span 4; align-self: end; font-size: clamp(1.2rem, 1.8vw, 1.5rem); line-height: 1.3; color: var(--on-ink); }
-
-/* rfm */
-.rfm { display: grid; grid-template-columns: auto repeat(5, 1fr); grid-template-rows: repeat(5, minmax(56px, 1fr)) auto; gap: 4px; font-size: 14px; }
-.rfm .c { padding: 8px; display: flex; align-items: flex-end; font-weight: 500; line-height: 1.15; }
-.rfm .yl, .rfm .xl { color: var(--on-ink-soft); display: flex; align-items: center; justify-content: center; }
-.rfm .xl { padding-top: 6px; }
-.seg-champ { background: var(--gain); color: #fff; }
-.seg-loyal { background: #2A7A57; color: #fff; }
-.seg-new { background: #3B5BDB; color: #fff; }
-.seg-mid { background: #34465F; }
-.seg-risk { background: #B5473C; color: #fff; }
-.seg-lost { background: #2B394D; color: var(--on-ink-soft); }
+/* case study dialog */
+dialog.case { position: fixed; inset: 0; width: 100%; height: 100%; max-width: none; max-height: none; border: 0; background: var(--fg); color: var(--bg); overflow-y: auto; overscroll-behavior: contain; padding: var(--m); }
+dialog.case[open] { animation: wipe .9s var(--ease) both; }
+dialog.case::backdrop { background: transparent; }
+@keyframes wipe { from { clip-path: inset(100% 0 0 0); } to { clip-path: inset(0 0 0 0); } }
+.case .top { display: flex; justify-content: space-between; font-size: 14px; color: #5B5953; }
+.case .x { font-weight: 700; color: var(--bg); font-size: 15px; padding: 8px 0; }
+.case .x:hover { color: var(--accent); }
+.case h3 { font-size: clamp(3.4rem, 11vw, 11rem); line-height: .82; margin: clamp(48px, 10vh, 120px) 0 clamp(32px, 5vw, 64px); }
+.case .lede { font-size: clamp(1.3rem, 2.2vw, 2rem); line-height: 1.2; font-weight: 500; max-width: 34ch; margin-bottom: clamp(40px, 6vw, 80px); }
+.case .cols { display: grid; grid-template-columns: 5fr 7fr; gap: clamp(24px, 5vw, 80px); align-items: start; padding-bottom: 64px; }
+.case .cols h4 { font-size: 14px; color: #5B5953; font-weight: 500; margin: 0 0 4px; }
+.case .cols p { max-width: 52ch; margin-bottom: 24px; }
+.case .rules { display: grid; grid-template-columns: auto 1fr; gap: 6px 20px; margin-bottom: 24px; }
+.case .rules dt { color: #5B5953; }
+.case .stack { color: #5B5953; font-size: 15px; }
+.case .gh { display: inline-block; margin-top: 20px; font-weight: 700; text-underline-offset: 5px; }
+.case .gh:hover { color: var(--accent); }
+.case .v { background: #E6E3DC; padding: clamp(16px, 2vw, 28px); }
 
 /* about */
-.about { margin-top: var(--gap); }
-.about-grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: clamp(24px, 4vw, 64px); margin-top: 48px; }
-.about-grid .big { grid-column: span 6; font-size: clamp(1.4rem, 2.2vw, 2rem); line-height: 1.3; font-weight: 500; letter-spacing: -.01em; max-width: 26ch; }
-.about-grid .body { grid-column: 7 / span 6; display: grid; gap: 16px; max-width: 60ch; }
+.about { padding-top: clamp(140px, 18vw, 280px); }
+.statement { font-size: clamp(2rem, 4.6vw, 4.6rem); line-height: 1.04; font-weight: 600; letter-spacing: -.02em; max-width: 20ch; margin: 40px 0 clamp(48px, 7vw, 100px); }
+.statement .wd { display: inline-block; }
+.about .cols { display: grid; grid-template-columns: repeat(12, 1fr); gap: 24px; }
+.about .cols p { grid-column: span 4; color: var(--fg); max-width: 44ch; }
+.about .cols p:first-child { grid-column: 5 / span 4; }
 
-/* tools */
-.tools { margin-top: var(--gap); }
-.tools-grid { display: grid; grid-template-columns: 4fr 8fr; gap: clamp(24px, 4vw, 64px); margin-top: 48px; align-items: start; }
-.tools-grid p { max-width: 36ch; }
-.tools-grid p + p { margin-top: 16px; color: var(--ink-soft); }
-.tbl-wrap { overflow-x: auto; }
-table { font-variant-numeric: tabular-nums; width: 100%; border-collapse: collapse; font-size: 16px; }
-th, td { padding: 12px 10px; text-align: left; }
-thead th { font-weight: 500; color: var(--ink-soft); font-size: 15px; vertical-align: bottom; }
-tbody tr:nth-child(odd) { background: var(--paper-2); }
-tbody th { font-weight: 700; }
-td { text-align: center; width: 15%; }
-thead th:not(:first-child) { text-align: center; }
-.dot { display: inline-block; width: 14px; height: 14px; border-radius: 50%; background: var(--ink); }
+/* toolkit */
+.tools { padding-top: clamp(120px, 14vw, 220px); }
+table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; margin-top: 8px; }
+th, td { padding: 10px 8px; text-align: left; border-bottom: 1px solid var(--line); }
+thead th { font-weight: 400; color: var(--mute); font-size: 14px; text-align: center; }
+tbody th { font-size: clamp(1.4rem, 3vw, 2.6rem); line-height: 1; padding-block: 12px; }
+td { text-align: center; width: 13%; }
+td i { display: inline-block; width: 12px; height: 12px; border-radius: 50%; background: var(--fg); }
+tbody tr:hover th { color: var(--accent); }
+tbody tr:hover td i { background: var(--accent); }
+.tools .also { color: var(--mute); font-size: 15px; margin-top: 16px; }
 
 /* contact */
-.contact { margin-top: var(--gap); background: var(--accent); color: #fff; padding-block: clamp(80px, 10vw, 140px); }
-.contact h2 { margin-bottom: 32px; }
-.contact .mail { font-size: clamp(1.5rem, 4vw, 3.6rem); font-weight: 700; letter-spacing: -.03em; line-height: 1.05; text-decoration: none; overflow-wrap: anywhere; }
-.contact .mail:hover { text-decoration: underline; text-decoration-thickness: 4px; text-underline-offset: 8px; }
-.contact-grid { display: grid; grid-template-columns: 8fr 4fr; gap: 32px; align-items: end; }
-.contact p { max-width: 40ch; margin-bottom: 24px; color: #DCE3FF; }
-.social { list-style: none; display: grid; gap: 12px; font-size: 20px; }
-.social a { display: inline-flex; align-items: center; gap: 12px; text-decoration: none; font-weight: 500; }
-.social a:hover { text-decoration: underline; text-underline-offset: 5px; }
-.social svg { width: 24px; height: 24px; fill: currentColor; }
+.contact { padding-top: clamp(140px, 18vw, 280px); }
+.contact .big { font-size: clamp(4rem, 15vw, 15rem); line-height: .8; color: var(--accent); margin: 40px 0 clamp(32px, 4vw, 56px); }
+.contact .grid { display: grid; grid-template-columns: 8fr 4fr; gap: 24px; align-items: end; }
+.mail { font-size: clamp(1.4rem, 3.6vw, 3.4rem); font-weight: 600; letter-spacing: -.02em; text-decoration: none; overflow-wrap: anywhere; background: linear-gradient(currentColor, currentColor) 0 100% / 0 3px no-repeat; transition: background-size .5s var(--out); }
+.mail:hover { background-size: 100% 3px; }
+.social { list-style: none; font-size: 18px; text-align: right; }
+.social a { text-decoration: none; }
+.social a:hover { color: var(--accent); }
+footer { padding: clamp(120px, 14vw, 200px) var(--m) var(--m); overflow: hidden; }
+footer .end { font-size: 21.4vw; line-height: .78; color: var(--fg); white-space: nowrap; margin-left: -.02em; }
+footer .meta { display: flex; justify-content: space-between; font-size: 14px; color: var(--mute); margin-top: 20px; }
 
-footer { background: var(--ink); color: var(--on-ink); padding-block: 48px 24px; overflow: hidden; }
-footer .big { font-size: clamp(4rem, 17.4vw, 16rem); font-weight: 800; letter-spacing: -.05em; line-height: .8; margin-left: -.05em; white-space: nowrap; }
-footer .meta { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; margin-top: 32px; font-size: 14px; color: var(--on-ink-soft); }
+/* reveal helpers */
+.js .split .ln { display: block; overflow: hidden; }
+.js .split .ln > span { display: block; }
 
-/* motion */
-.js .rise { opacity: 0; transform: translateY(24px); transition: opacity .7s var(--ease), transform .7s var(--ease); transition-delay: calc(var(--i, 0) * 80ms); }
-.js .rise.in { opacity: 1; transform: none; }
-.js .drivers .bar { transform: scaleX(0); transition: transform 1s var(--ease); transition-delay: calc(var(--i, 0) * 120ms + 200ms); }
-.js .drivers.in .bar { transform: scaleX(1); }
+@media (max-width: 820px) {
+  .hero .sim { left: var(--m); right: auto; top: auto; bottom: calc(var(--m) + 28px + 22vw + 24px); width: auto; }
+  .sim dl { display: none; }
+  .sim .w { display: none; }
+  .hero .intro { top: 13vh; }
+  .hud .br { display: none; }
+  .hero .name { bottom: calc(var(--m) + 52px); }
+  .case .cols, .contact .grid { grid-template-columns: 1fr; }
+  .social { text-align: left; }
+  .about .cols p, .about .cols p:first-child { grid-column: 1 / -1; }
+  .row .m { display: none; }
+  .row { grid-template-columns: 1fr; }
+  .v .drv div { grid-template-columns: 1fr; gap: 4px; }
+}
 @media (prefers-reduced-motion: reduce) {
-  html { scroll-behavior: auto; }
-  .js .rise, .js .drivers .bar { opacity: 1; transform: none; transition: none; }
-}
-
-/* phone */
-@media (max-width: 900px) {
-  .hero-grid, .tools-grid, .contact-grid { grid-template-columns: 1fr; }
-  .proj .text, .proj .figure, .proj.wide .text, .proj.wide aside, .about-grid .big, .about-grid .body { grid-column: 1 / -1; }
-  .proj.flip .text { order: 0; }
-  .nav a:not(.name):not(.btn) { display: none; }
-}
-@media (max-width: 560px) {
-  body { font-size: 17px; }
-  .readout { grid-template-columns: repeat(3, auto); gap: 2px 16px; }
-  .readout dd { font-size: 1.25rem; }
-  .run { grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
-  .run div { padding: 12px 10px; }
-  .drivers .row { grid-template-columns: 1fr; gap: 6px; }
-  .pipeline li { grid-template-columns: 1fr; gap: 2px; }
-  .pipeline li span:last-child { text-align: left; }
-  .frontier .axis { font-size: 22px; }
-  .frontier .best-label { font-size: 24px; }
-  .rfm { font-size: 12px; }
-  .rfm .c { padding: 5px; }
-  th, td { padding: 10px 6px; }
+  .hud .dot.open { animation: none; }
+  dialog.case[open] { animation: none; }
 }
 </style>
 </head>
 <body>
 <script>document.documentElement.classList.add('js')</script>
 
-<header class="wrap nav">
-  <a class="name" href="#top">Atul Vinod</a>
-  <a href="#projects">Projects</a>
-  <a href="#about">About</a>
-  <a href="#contact">Contact</a>
-  <a class="btn" href="mailto:atulvinod2001@gmail.com">Email me</a>
-</header>
+<div class="loader" aria-hidden="true">
+  <div class="bar"></div>
+  <div class="count cond">0</div>
+  <div class="lbl">portfolios simulated<br>in your browser</div>
+</div>
+
+<div class="hud">
+  <div class="tl"><a href="#top">Atul Vinod</a><br><span style="opacity:.6">Analytics &amp; machine learning</span></div>
+  <nav class="tr" aria-label="Main"><a href="#work">Work</a><a href="#about">About</a><a href="#contact">Contact</a></nav>
+  <div class="bl tnum" aria-live="off"><span class="dot" id="mk-dot"></span><span id="mk">NSE</span><br><span id="clock" style="opacity:.6">IST</span></div>
+  <div class="br">Scroll</div>
+</div>
 
 <main id="top">
-  <section class="wrap hero" aria-labelledby="hero-title">
-    <h1 id="hero-title" class="rise">Atul Vinod</h1>
-    <div class="hero-grid">
-      <div>
-        <p class="lede rise" style="--i:1">I build tools that turn market and business data into decisions.</p>
-        <p class="sub rise" style="--i:2">MBA student with a computer science degree. I'm working on a daily stock scanner and risk models, and I'm open to analytics and data science roles.</p>
-        <div class="actions rise" style="--i:3">
-          <a class="btn" href="#projects">See the projects</a>
-          <a class="btn quiet" href="mailto:atulvinod2001@gmail.com">Email me</a>
-        </div>
-      </div>
+  <section class="hero" aria-labelledby="name">
+    <h1 class="name cond" id="name" aria-label="Atul Vinod">Atul Vinod</h1>
+    <p class="intro">I build tools that turn market and business data into decisions. MBA, computer science, open to analytics roles.</p>
+    <div class="sim">
+      <dl>
+        <dt>Best Sharpe ratio</dt><dd class="big" id="o-s">0.00</dd>
+        <dt>Return</dt><dd id="o-r">0%</dd>
+        <dt>Volatility</dt><dd id="o-v">0%</dd>
+        <dt>Portfolios</dt><dd id="o-n">0</dd>
+      </dl>
+      <p class="w" id="o-w"></p>
+      <button class="pill" id="rerun" type="button">Run again</button>
+      <p class="hint">Drag the cloud to turn it. Each point is a random mix of Nifty 50, US equities, gold and bonds; returns are assumed.</p>
+    </div>
+    <span class="axis-l" id="ax-x">Volatility</span><span class="axis-l" id="ax-y">Return</span><span class="axis-l" id="ax-z">Diversification</span>
+    <span class="best-l" id="best-l">Best Sharpe</span>
+  </section>
 
-      <figure class="frontier rise" style="--i:2" aria-labelledby="frontier-cap">
-        <svg id="frontier" viewBox="0 0 640 400" role="img" aria-label="Scatter of simulated portfolios by volatility and return, with the efficient frontier and the highest-Sharpe portfolio marked."></svg>
-        <div class="fig-foot">
-          <dl class="readout" aria-live="polite">
-            <div><dt>Best Sharpe</dt><dd id="o-sharpe">0.00</dd></div>
-            <div><dt>Return</dt><dd id="o-ret">0%</dd></div>
-            <div><dt>Volatility</dt><dd id="o-vol">0%</dd></div>
-          </dl>
-          <button class="btn" id="rerun" type="button">Run 2,000 more</button>
-        </div>
-        <p class="weights" id="o-w"></p>
-        <figcaption class="fig-note" id="frontier-cap">2,000 random portfolios of four assets, simulated in your browser. The line is the efficient frontier; the blue point has the best return per unit of risk. Returns and volatilities are assumed for the demo, risk-free rate 6.5%.</figcaption>
-      </figure>
+  <section class="work wrap" id="work" aria-labelledby="work-h">
+    <div class="sec-head"><h2 id="work-h">Selected work</h2><span>4 projects</span></div>
+    <ul class="index">
+      <li><button class="row" data-case="c-scan"><span class="t cond">Swing scanner</span><span class="m">Markets<br>Live system</span></button></li>
+      <li><button class="row" data-case="c-risk"><span class="t cond">Risk engine</span><span class="m">Fraud &amp; risk<br>Explainable ML</span></button></li>
+      <li><button class="row" data-case="c-port"><span class="t cond">Portfolio lab</span><span class="m">Portfolios<br>Monte Carlo</span></button></li>
+      <li><button class="row" data-case="c-ecom"><span class="t cond">Customer map</span><span class="m">E-commerce<br>Segmentation</span></button></li>
+    </ul>
+  </section>
+
+  <section class="about wrap" id="about" aria-labelledby="about-h">
+    <div class="sec-head"><h2 id="about-h">About</h2><span>MBA, B.Tech CS</span></div>
+    <p class="statement" id="statement">I started out writing software and moved toward the question software usually skips: what should we actually do with this number?</p>
+    <div class="cols">
+      <p>I'm doing an MBA after a computer science degree, so I sit between the people who build models and the people who act on them. Most of my work is in finance: risk, portfolios and markets.</p>
+      <p>Right now I'm focused on machine learning in finance, and on making risk models readable by the people who sign off on them. Outside datasets, I read behavioural economics.</p>
+      <p>AWS Certified Cloud Practitioner. Microsoft Office Specialist, Excel. Google AI Essentials.</p>
     </div>
   </section>
 
-  <section class="projects" id="projects" aria-labelledby="projects-title">
-    <div class="wrap">
-      <h2 id="projects-title" class="rise">Projects</h2>
-
-      <article class="proj">
-        <div class="text">
-          <h3 class="rise">Swing scanner for the Nifty 200</h3>
-          <p class="rise" style="--i:1">Every weekday at 16:30 IST, after the market closes, it scans the Nifty 200 for long-only swing setups and publishes up to three paper trades with entry, stop and target.</p>
-          <p class="rise" style="--i:2">It reads the market first. When the index is below its 50-day average and breadth is weak, it opens nothing and keeps a watchlist. Every published signal is replayed against later prices, so the results are tracked in R, not guessed.</p>
-          <dl class="rules rise" style="--i:3">
-            <dt>Reward to risk</dt><dd>at least 2.0, target at 2.5R</dd>
-            <dt>Stop</dt><dd>no wider than 8%</dd>
-            <dt>Time exit</dt><dd>after 15 sessions</dd>
-            <dt>Costs</dt><dd>0.25% round trip, counted in</dd>
-          </dl>
-          <p class="stack rise" style="--i:4">Python, pandas, yfinance, Vercel cron and Blob, Claude or Gemini for the news check</p>
-          <a class="link rise" style="--i:5" href="https://github.com/atulvinod01/swing-scanner" target="_blank" rel="noopener">Source on GitHub</a>
-        </div>
-        <div class="figure">
-          <div class="panel rise" style="--i:1">
-            <ol class="pipeline" aria-label="Scan pipeline, in order">
-              <li><span>Nifty 200 universe</span><span>200 stocks</span></li>
-              <li><span>Liquidity and price filter</span><span>Rs 20 Cr turnover, Rs 50 min</span></li>
-              <li><span>Market regime</span><span>risk-on, mixed or risk-off</span></li>
-              <li><span>Three setup detectors</span><span>pullback, breakout, RS leader</span></li>
-              <li><span>Score, entry, stop, target</span><span>cutoff 65 or 72</span></li>
-              <li><span>Results-date check</span><span>skip if due in 21 days</span></li>
-              <li><span>News check</span><span>can only downgrade</span></li>
-              <li class="out"><span>Paper picks</span><span>up to 3</span></li>
-            </ol>
-            <div class="run">
-              <div><b class="off">Risk-off</b><span>regime</span></div>
-              <div><b>10</b><span>setups found</span></div>
-              <div><b>0</b><span>picks published</span></div>
-            </div>
-          </div>
-          <p class="cap">Test run on 27 Oct 2026 data: 192 of 200 symbols fetched in about 40 seconds. The market was risk-off, so the 10 setups went to the watchlist.</p>
-        </div>
-      </article>
-
-      <article class="proj flip">
-        <div class="text">
-          <h3 class="rise">Enterprise risk management</h3>
-          <div class="case">
-            <div class="rise" style="--i:1"><h4>The problem</h4><p>Fraud teams drown in alerts. Real signals get lost in operational noise, and analysts stop trusting the scores.</p></div>
-            <div class="rise" style="--i:2"><h4>What I built</h4><p>A hybrid anomaly detector: statistical checks and ML classifiers together, with SHAP turning every score into the few risk drivers behind it, in words a manager can act on.</p></div>
-            <div class="rise" style="--i:3"><h4>The result</h4><p>A 40% reduction in financial risk exposure, faster security audits, and dashboards executives read without a translator.</p></div>
-          </div>
-          <p class="stack rise" style="--i:4">Python, scikit-learn, SHAP, Streamlit</p>
-          <a class="link rise" style="--i:5" href="https://github.com/atulvinod01/EnterpriseRiskManagement" target="_blank" rel="noopener">Source on GitHub</a>
-        </div>
-        <div class="figure">
-          <div class="panel rise" style="--i:1">
-            <div class="flag"><strong>Transaction flagged</strong><span>High risk</span></div>
-            <div class="drivers" role="img" aria-label="Example risk drivers for a flagged transaction, largest first: transfer amount versus history, new device, login location, account age. Account age lowers the risk.">
-              <div class="row"><span>Amount vs. history</span><div class="bar" style="width:92%;--i:0"></div></div>
-              <div class="row"><span>New device</span><div class="bar" style="width:64%;--i:1"></div></div>
-              <div class="row"><span>Login location</span><div class="bar" style="width:47%;--i:2"></div></div>
-              <div class="row"><span>Account age</span><div class="bar down" style="width:22%;--i:3"></div></div>
-            </div>
-          </div>
-          <p class="cap">How a flagged case reads: the drivers pushing the score up in red, the one pulling it down in green. Example case, not real data.</p>
-        </div>
-      </article>
-
-      <article class="proj wide">
-        <div class="text">
-          <h3 class="rise">Quantitative portfolio optimisation</h3>
-          <p class="rise" style="--i:1">A Monte Carlo engine that pulls live prices, simulates thousands of portfolios, finds the one with the best Sharpe ratio and reports its Value at Risk, with an interactive efficient frontier.</p>
-          <p class="stack rise" style="--i:2">Python, NumPy, yfinance, Streamlit</p>
-          <a class="link rise" style="--i:3" href="https://github.com/atulvinod01/QuantitativePortfolioOptimization" target="_blank" rel="noopener">Source on GitHub</a>
-        </div>
-        <aside class="rise" style="--i:2">The chart at the top of this page is a small version of it. <a class="link" href="#top" style="margin-top:8px;display:block">Run it again</a></aside>
-      </article>
-
-      <article class="proj">
-        <div class="text">
-          <h3 class="rise">E-commerce customer analysis</h3>
-          <p class="rise" style="--i:1">RFM segmentation and cohort analysis on raw transactions: how recently each customer bought, how often, and how much. The output is a list of who to reward, who to win back and who to let go.</p>
-          <p class="rise" style="--i:2">The champions get loyalty offers. The at-risk group, once frequent and now quiet, gets the retention budget first.</p>
-          <p class="stack rise" style="--i:3">Python, SQLite, pandas, Seaborn</p>
-          <a class="link rise" style="--i:4" href="https://github.com/atulvinod01/E-CommerceSalesAnalysis" target="_blank" rel="noopener">Source on GitHub</a>
-        </div>
-        <div class="figure">
-          <div class="panel rise" style="--i:1">
-            <div class="rfm" role="img" aria-label="RFM segment map: frequency on the vertical axis, recency on the horizontal. Champions sit at high frequency and recent purchases, at risk at high frequency but long ago, new customers at low frequency and recent, lost at low frequency and long ago.">
-              <div class="yl">5</div><div class="c seg-risk" style="grid-column:span 2">At risk</div><div class="c seg-loyal">Loyal</div><div class="c seg-champ" style="grid-column:span 2;grid-row:span 2">Champions</div>
-              <div class="yl">4</div><div class="c seg-risk" style="grid-column:span 2">Can't lose them</div><div class="c seg-loyal">Loyal</div>
-              <div class="yl">3</div><div class="c seg-lost">Hibernating</div><div class="c seg-mid" style="grid-column:span 2">Need attention</div><div class="c seg-loyal" style="grid-column:span 2">Potential loyalists</div>
-              <div class="yl">2</div><div class="c seg-lost" style="grid-column:span 2;grid-row:span 2">Lost</div><div class="c seg-mid">About to sleep</div><div class="c seg-new" style="grid-column:span 2">Promising</div>
-              <div class="yl">1</div><div class="c seg-mid">About to sleep</div><div class="c seg-new" style="grid-column:span 2">New customers</div>
-              <div></div><div class="xl">1</div><div class="xl">2</div><div class="xl">3</div><div class="xl">4</div><div class="xl">5</div>
-            </div>
-          </div>
-          <p class="cap">The segment map: frequency score up the side, recency score along the bottom, 5 is best.</p>
-        </div>
-      </article>
-    </div>
+  <section class="tools wrap" aria-labelledby="tools-h">
+    <div class="sec-head"><h2 id="tools-h">Toolkit</h2><span>Where each tool was used</span></div>
+    <table>
+      <thead><tr><td></td><th scope="col">Scanner</th><th scope="col">Risk</th><th scope="col">Portfolio</th><th scope="col">Customers</th></tr></thead>
+      <tbody>
+        <tr><th scope="row" class="cond">Python</th><td><i aria-label="used"></i></td><td><i aria-label="used"></i></td><td><i aria-label="used"></i></td><td><i aria-label="used"></i></td></tr>
+        <tr><th scope="row" class="cond">pandas</th><td><i aria-label="used"></i></td><td></td><td></td><td><i aria-label="used"></i></td></tr>
+        <tr><th scope="row" class="cond">NumPy</th><td></td><td></td><td><i aria-label="used"></i></td><td></td></tr>
+        <tr><th scope="row" class="cond">yfinance</th><td><i aria-label="used"></i></td><td></td><td><i aria-label="used"></i></td><td></td></tr>
+        <tr><th scope="row" class="cond">scikit-learn</th><td></td><td><i aria-label="used"></i></td><td></td><td></td></tr>
+        <tr><th scope="row" class="cond">SHAP</th><td></td><td><i aria-label="used"></i></td><td></td><td></td></tr>
+        <tr><th scope="row" class="cond">SQL</th><td></td><td></td><td></td><td><i aria-label="used"></i></td></tr>
+        <tr><th scope="row" class="cond">Streamlit</th><td></td><td><i aria-label="used"></i></td><td><i aria-label="used"></i></td><td></td></tr>
+        <tr><th scope="row" class="cond">LLM APIs</th><td><i aria-label="used"></i></td><td></td><td></td><td></td></tr>
+      </tbody>
+    </table>
+    <p class="also">Also Seaborn, Matplotlib, Vercel, AWS, Git and Excel.</p>
   </section>
 
-  <section class="wrap about" id="about" aria-labelledby="about-title">
-    <h2 id="about-title" class="rise">About</h2>
-    <div class="about-grid">
-      <p class="big rise" style="--i:1">I started out writing software and moved toward the question software usually skips: what should we actually do with this number?</p>
-      <div class="body">
-        <p class="rise" style="--i:2">I'm doing an MBA after a computer science degree, so I sit between the people who build models and the people who have to act on them. Most of my work is in finance: risk, portfolios and markets.</p>
-        <p class="rise" style="--i:3">Right now I'm focused on machine learning in finance, and on making risk models readable by the people who sign off on them.</p>
-        <p class="rise" style="--i:4">Outside of datasets I read about behavioural economics and build side projects that probably won't make money but always teach me something. I'm an AWS Certified Cloud Practitioner, a Microsoft Office Specialist in Excel, and have completed Google AI Essentials.</p>
-      </div>
-    </div>
-  </section>
-
-  <section class="wrap tools" aria-labelledby="tools-title">
-    <h2 id="tools-title" class="rise">What I use</h2>
-    <div class="tools-grid">
-      <div>
-        <p class="rise" style="--i:1">The tools that show up in the work above, and where.</p>
-        <p class="rise" style="--i:2">Also: AWS, Excel, Git, Matplotlib.</p>
-      </div>
-      <div class="tbl-wrap rise" style="--i:2">
-        <table>
-          <thead><tr><td></td><th scope="col">Scanner</th><th scope="col">Risk</th><th scope="col">Portfolio</th><th scope="col">E-commerce</th></tr></thead>
-          <tbody>
-            <tr><th scope="row">Python</th><td><span class="dot" aria-label="used"></span></td><td><span class="dot" aria-label="used"></span></td><td><span class="dot" aria-label="used"></span></td><td><span class="dot" aria-label="used"></span></td></tr>
-            <tr><th scope="row">pandas</th><td><span class="dot" aria-label="used"></span></td><td></td><td></td><td><span class="dot" aria-label="used"></span></td></tr>
-            <tr><th scope="row">NumPy</th><td></td><td></td><td><span class="dot" aria-label="used"></span></td><td></td></tr>
-            <tr><th scope="row">yfinance</th><td><span class="dot" aria-label="used"></span></td><td></td><td><span class="dot" aria-label="used"></span></td><td></td></tr>
-            <tr><th scope="row">SQL</th><td></td><td></td><td></td><td><span class="dot" aria-label="used"></span></td></tr>
-            <tr><th scope="row">scikit-learn</th><td></td><td><span class="dot" aria-label="used"></span></td><td></td><td></td></tr>
-            <tr><th scope="row">SHAP</th><td></td><td><span class="dot" aria-label="used"></span></td><td></td><td></td></tr>
-            <tr><th scope="row">Streamlit</th><td></td><td><span class="dot" aria-label="used"></span></td><td><span class="dot" aria-label="used"></span></td><td></td></tr>
-            <tr><th scope="row">Seaborn</th><td></td><td></td><td></td><td><span class="dot" aria-label="used"></span></td></tr>
-            <tr><th scope="row">Vercel</th><td><span class="dot" aria-label="used"></span></td><td></td><td></td><td></td></tr>
-            <tr><th scope="row">LLM APIs</th><td><span class="dot" aria-label="used"></span></td><td></td><td></td><td></td></tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </section>
-
-  <section class="contact" id="contact" aria-labelledby="contact-title">
-    <div class="wrap contact-grid">
-      <div>
-        <h2 id="contact-title" class="rise">Get in touch</h2>
-        <p class="rise" style="--i:1">About a role, a project, or a dataset you can't make sense of.</p>
-        <a class="mail rise" style="--i:2" href="mailto:atulvinod2001@gmail.com">atulvinod2001@gmail.com</a>
-      </div>
-      <ul class="social rise" style="--i:3">
-        <li><a href="https://www.linkedin.com/in/atul-vinod-9083b5225" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13zM7.12 20.45H3.56V9h3.56v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.73V1.73C24 .77 23.2 0 22.22 0z"/></svg>LinkedIn</a></li>
-        <li><a href="https://github.com/atulvinod01" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 .3a12 12 0 0 0-3.8 23.38c.6.12.83-.26.83-.57v-2.23c-3.34.73-4.04-1.42-4.04-1.42-.55-1.4-1.34-1.77-1.34-1.77-1.08-.74.09-.73.09-.73 1.2.09 1.84 1.24 1.84 1.24 1.07 1.83 2.8 1.3 3.49 1 .1-.78.42-1.31.76-1.61-2.67-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.14-.3-.54-1.52.1-3.18 0 0 1-.32 3.3 1.23a11.5 11.5 0 0 1 6 0c2.28-1.55 3.29-1.23 3.29-1.23.64 1.66.24 2.88.12 3.18a4.65 4.65 0 0 1 1.23 3.22c0 4.61-2.8 5.63-5.48 5.92.42.36.81 1.1.81 2.22v3.29c0 .32.21.7.82.58A12 12 0 0 0 12 .3"/></svg>GitHub</a></li>
+  <section class="contact wrap" id="contact" aria-labelledby="contact-h">
+    <div class="sec-head"><h2 id="contact-h">Contact</h2><span>Replies within a day</span></div>
+    <p class="big cond">Let's talk</p>
+    <div class="grid">
+      <a class="mail" href="mailto:atulvinod2001@gmail.com">atulvinod2001@gmail.com</a>
+      <ul class="social">
+        <li><a href="https://www.linkedin.com/in/atul-vinod-9083b5225" target="_blank" rel="noopener">LinkedIn</a></li>
+        <li><a href="https://github.com/atulvinod01" target="_blank" rel="noopener">GitHub</a></li>
       </ul>
     </div>
   </section>
 </main>
 
 <footer>
-  <div class="wrap">
-    <p class="big" aria-hidden="true">Atul Vinod</p>
-    <div class="meta"><span>© 2026 Atul Vinod</span><span>atulvinod.com</span></div>
-  </div>
+  <p class="end cond" aria-hidden="true">Atul Vinod</p>
+  <div class="meta"><span>© 2026</span><a href="#top">Back to top</a></div>
 </footer>
 
-<script>
-// Entrances: content is visible without JS; .js hides it until in view.
-const io = new IntersectionObserver(es => es.forEach(e => {
-  if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
-}), { rootMargin: '0px 0px -8% 0px' });
-document.querySelectorAll('.rise, .drivers').forEach(el => io.observe(el));
+<div class="preview" aria-hidden="true"><div class="open">Open</div><div class="pv v"></div></div>
 
-// Monte Carlo efficient frontier. Assumed annual figures, demo only.
+<!-- Case studies -->
+<dialog class="case" id="c-scan" aria-labelledby="c-scan-h">
+  <div class="top"><span>Markets, 2026</span><button class="x" type="button">Close</button></div>
+  <h3 class="cond" id="c-scan-h">Swing scanner</h3>
+  <p class="lede">Every weekday at 16:30 IST it scans the Nifty 200 and publishes up to three paper trades, or none when the market says no.</p>
+  <div class="cols">
+    <div>
+      <h4>How it decides</h4>
+      <p>It reads the market first. When the index is below its 50-day average and breadth is weak, it opens nothing and keeps a watchlist. Otherwise three detectors look for pullbacks to the 20-day average, base breakouts on volume and relative-strength leaders at 52-week highs.</p>
+      <h4>How it keeps itself honest</h4>
+      <p>Every published signal is replayed against later prices, so results are tracked in R, not remembered. Stocks with results due inside the holding window are skipped, and a news check can only downgrade a trade, never promote one.</p>
+      <dl class="rules">
+        <dt>Reward to risk</dt><dd>at least 2.0, target 2.5R</dd>
+        <dt>Stop</dt><dd>no wider than 8%</dd>
+        <dt>Time exit</dt><dd>after 15 sessions</dd>
+        <dt>Costs</dt><dd>0.25% round trip, counted in</dd>
+      </dl>
+      <p class="stack">Python, pandas, yfinance, Vercel cron and Blob, Claude or Gemini for news</p>
+      <a class="gh" href="https://github.com/atulvinod01/swing-scanner" target="_blank" rel="noopener">Source on GitHub</a>
+    </div>
+    <div class="v">
+      <ol class="pipe" aria-label="Scan pipeline, in order">
+        <li><span>Nifty 200 universe</span><span>200 stocks</span></li>
+        <li><span>Liquidity and price filter</span><span>Rs 20 Cr turnover</span></li>
+        <li><span>Market regime</span><span>on, mixed, off</span></li>
+        <li><span>Three setup detectors</span><span>pullback, breakout, RS</span></li>
+        <li><span>Score and levels</span><span>cutoff 65 or 72</span></li>
+        <li><span>Results-date check</span><span>21-day window</span></li>
+        <li><span>News check</span><span>downgrade only</span></li>
+        <li class="out"><span>Paper picks</span><span>up to 3</span></li>
+      </ol>
+      <div class="stats"><div><b class="off">Risk-off</b><span>regime</span></div><div><b>10</b><span>setups</span></div><div><b>0</b><span>picks</span></div></div>
+      <p class="cap">Test run on 27 Oct 2026 data: 192 of 200 symbols in about 40 seconds. Risk-off, so the setups went to the watchlist.</p>
+    </div>
+  </div>
+</dialog>
+
+<dialog class="case" id="c-risk" aria-labelledby="c-risk-h">
+  <div class="top"><span>Fraud and risk</span><button class="x" type="button">Close</button></div>
+  <h3 class="cond" id="c-risk-h">Risk engine</h3>
+  <p class="lede">A fraud detector that explains itself, so the people who act on an alert can see why it fired.</p>
+  <div class="cols">
+    <div>
+      <h4>The problem</h4>
+      <p>Fraud teams drown in alerts. Real signals get lost in operational noise, and analysts stop trusting the scores.</p>
+      <h4>What I built</h4>
+      <p>A hybrid anomaly detector: statistical checks and ML classifiers together, with SHAP turning every score into the few risk drivers behind it, in words a manager can act on.</p>
+      <h4>The result</h4>
+      <p>A 40% reduction in financial risk exposure, faster security audits, and dashboards executives read without a translator.</p>
+      <p class="stack">Python, scikit-learn, SHAP, Streamlit</p>
+      <a class="gh" href="https://github.com/atulvinod01/EnterpriseRiskManagement" target="_blank" rel="noopener">Source on GitHub</a>
+    </div>
+    <div class="v">
+      <div class="flag"><span style="color:inherit">Transaction flagged</span><span>High risk</span></div>
+      <div class="drv" role="img" aria-label="Example risk drivers, largest first: amount versus history, new device, login location; account age lowers the risk.">
+        <div><span>Amount vs. history</span><i style="width:92%"></i></div>
+        <div><span>New device</span><i style="width:64%"></i></div>
+        <div><span>Login location</span><i style="width:47%"></i></div>
+        <div><span>Account age</span><i class="dn" style="width:22%"></i></div>
+      </div>
+      <p class="cap">How a flagged case reads. Example case, not real data.</p>
+    </div>
+  </div>
+</dialog>
+
+<dialog class="case" id="c-port" aria-labelledby="c-port-h">
+  <div class="top"><span>Portfolios</span><button class="x" type="button">Close</button></div>
+  <h3 class="cond" id="c-port-h">Portfolio lab</h3>
+  <p class="lede">A Monte Carlo engine that finds the best-Sharpe portfolio from live prices. The cloud on the home page is a small version of it.</p>
+  <div class="cols">
+    <div>
+      <h4>What it does</h4>
+      <p>Pulls live prices with yfinance, simulates thousands of random weightings, finds the portfolio with the best return per unit of risk, and reports its Value at Risk.</p>
+      <h4>Why it's useful</h4>
+      <p>The efficient frontier is interactive, so you can see what you give up in return for every step down in risk, instead of reading one optimised answer.</p>
+      <p class="stack">Python, NumPy, yfinance, Streamlit</p>
+      <a class="gh" href="https://github.com/atulvinod01/QuantitativePortfolioOptimization" target="_blank" rel="noopener">Source on GitHub</a>
+    </div>
+    <div class="v"><div id="mini"></div><p class="cap">The current home-page simulation, flattened: volatility across, return up, best Sharpe in orange.</p></div>
+  </div>
+</dialog>
+
+<dialog class="case" id="c-ecom" aria-labelledby="c-ecom-h">
+  <div class="top"><span>E-commerce</span><button class="x" type="button">Close</button></div>
+  <h3 class="cond" id="c-ecom-h">Customer map</h3>
+  <p class="lede">Raw transactions turned into a list of who to reward, who to win back and who to let go.</p>
+  <div class="cols">
+    <div>
+      <h4>Method</h4>
+      <p>RFM segmentation and cohort analysis: how recently each customer bought, how often, and how much, scored 1 to 5 and mapped to segments.</p>
+      <h4>What it changes</h4>
+      <p>Champions get loyalty offers. The at-risk group, once frequent and now quiet, gets the retention budget first.</p>
+      <p class="stack">Python, SQLite, pandas, Seaborn</p>
+      <a class="gh" href="https://github.com/atulvinod01/E-CommerceSalesAnalysis" target="_blank" rel="noopener">Source on GitHub</a>
+    </div>
+    <div class="v">
+      <div class="rfm" role="img" aria-label="RFM segment map: frequency up the side, recency along the bottom. Champions top right, at risk top left, new customers bottom right, lost bottom left.">
+        <div class="ax">5</div><div class="rk" style="grid-column:span 2">At risk</div><div class="lo">Loyal</div><div class="ch" style="grid-column:span 2;grid-row:span 2">Champions</div>
+        <div class="ax">4</div><div class="rk" style="grid-column:span 2">Can't lose</div><div class="lo">Loyal</div>
+        <div class="ax">3</div><div class="ls">Hibernating</div><div class="md" style="grid-column:span 2">Need attention</div><div class="lo" style="grid-column:span 2">Potential loyalists</div>
+        <div class="ax">2</div><div class="ls" style="grid-column:span 2;grid-row:span 2">Lost</div><div class="md">About to sleep</div><div class="nw" style="grid-column:span 2">Promising</div>
+        <div class="ax">1</div><div class="md">About to sleep</div><div class="nw" style="grid-column:span 2">New customers</div>
+        <div></div><div class="ax">1</div><div class="ax">2</div><div class="ax">3</div><div class="ax">4</div><div class="ax">5</div>
+      </div>
+      <p class="cap">Frequency up the side, recency along the bottom, 5 is best.</p>
+    </div>
+  </div>
+</dialog>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js"></script>
+<script type="module">
+import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.min.js';
+
+const $ = s => document.querySelector(s);
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const finePointer = matchMedia('(hover: hover)').matches;
+const hasGsap = !!window.gsap;
+if (hasGsap) gsap.registerPlugin(ScrollTrigger);
+
+/* ---------- NSE status + IST clock ---------- */
+// ponytail: ignores exchange holidays; add the NSE holiday list if it matters.
+function market() {
+  const p = Object.fromEntries(new Intl.DateTimeFormat('en-GB', { timeZone: 'Asia/Kolkata', weekday: 'short', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false })
+    .formatToParts(new Date()).map(x => [x.type, x.value]));
+  const t = +p.hour * 60 + +p.minute, wd = p.weekday, weekday = !['Sat', 'Sun'].includes(wd);
+  const open = weekday && t >= 555 && t < 930;
+  $('#clock').textContent = `${p.hour}:${p.minute}:${p.second} IST`;
+  $('#mk-dot').classList.toggle('open', open);
+  $('#mk').textContent = open ? 'NSE open, closes 15:30'
+    : weekday && t < 555 ? 'NSE closed, opens 09:15'
+    : wd === 'Fri' || !weekday ? 'NSE closed, opens Mon 09:15' : 'NSE closed, opens 09:15 tomorrow';
+}
+market(); setInterval(market, 1000);
+
+/* ---------- Monte Carlo ---------- */
 const assets = [
-  { name: 'Nifty 50', mu: .12, sd: .18 },
-  { name: 'US equities', mu: .11, sd: .17 },
-  { name: 'Gold', mu: .08, sd: .14 },
-  { name: 'Govt bonds', mu: .07, sd: .04 },
+  { name: 'Nifty 50', mu: .12, sd: .18 }, { name: 'US equities', mu: .11, sd: .17 },
+  { name: 'Gold', mu: .08, sd: .14 }, { name: 'Govt bonds', mu: .07, sd: .04 },
 ];
 const corr = [[1, .5, .05, .1], [.5, 1, .05, 0], [.05, .05, 1, 0], [.1, 0, 0, 1]];
-const RF = .065, N = 2000, W = 640, H = 400, P = { l: 52, r: 16, t: 16, b: 44 };
-const svg = document.getElementById('frontier');
-const NS = 'http://www.w3.org/2000/svg';
-const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-let pts = [];
-
+const RF = .065, N = 2000;
 function simulate() {
   const out = [];
   for (let k = 0; k < N; k++) {
     const w = assets.map(() => -Math.log(1 - Math.random()));
     const s = w.reduce((a, b) => a + b);
-    for (let i = 0; i < w.length; i++) w[i] /= s;
-    let ret = 0, v = 0;
-    for (let i = 0; i < w.length; i++) {
-      ret += w[i] * assets[i].mu;
-      for (let j = 0; j < w.length; j++) v += w[i] * w[j] * assets[i].sd * assets[j].sd * corr[i][j];
+    let ret = 0, v = 0, hhi = 0;
+    for (let i = 0; i < 4; i++) {
+      w[i] /= s; ret += w[i] * assets[i].mu; hhi += w[i] * w[i];
     }
+    for (let i = 0; i < 4; i++) for (let j = 0; j < 4; j++) v += w[i] * w[j] * assets[i].sd * assets[j].sd * corr[i][j];
     const vol = Math.sqrt(v);
-    out.push({ w, ret, vol, sharpe: (ret - RF) / vol });
+    out.push({ w, ret, vol, div: 1 - hhi, sharpe: (ret - RF) / vol });
   }
   return out;
 }
 
-const el = (tag, attrs, parent = svg) => {
-  const n = document.createElementNS(NS, tag);
-  for (const k in attrs) n.setAttribute(k, attrs[k]);
-  parent.appendChild(n); return n;
-};
+/* ---------- 3D cloud ---------- */
+const hero = $('.hero');
+const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+hero.prepend(renderer.domElement);
+renderer.domElement.setAttribute('aria-hidden', 'true');
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(38, 1, .1, 100);
+camera.position.set(0, 0, 11);
+const group = new THREE.Group(); scene.add(group);
+
+const dotTex = (() => {
+  const c = document.createElement('canvas'); c.width = c.height = 64;
+  const g = c.getContext('2d'); g.fillStyle = '#fff'; g.beginPath(); g.arc(32, 32, 30, 0, 7); g.fill();
+  return new THREE.CanvasTexture(c);
+})();
+const geo = new THREE.BufferGeometry();
+geo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(N * 3), 3));
+geo.setAttribute('color', new THREE.BufferAttribute(new Float32Array(N * 3), 3));
+const cloud = new THREE.Points(geo, new THREE.PointsMaterial({ size: .075, map: dotTex, alphaTest: .5, vertexColors: true, sizeAttenuation: true }));
+group.add(cloud);
+const bestGeo = new THREE.BufferGeometry();
+bestGeo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(3), 3));
+const best = new THREE.Points(bestGeo, new THREE.PointsMaterial({ size: .32, map: dotTex, alphaTest: .5, color: 0xFF4D00 }));
+group.add(best);
+
+const X = v => (v - .04) / .14 * 6 - 3, Y = r => (r - .07) / .05 * 4 - 2, Z = d => (d - .15) / .6 * 4 - 2;
+const O = new THREE.Vector3(-3.2, -2.3, -2.3);
+const ends = { x: new THREE.Vector3(3.4, -2.3, -2.3), y: new THREE.Vector3(-3.2, 2.4, -2.3), z: new THREE.Vector3(-3.2, -2.3, 2.4) };
+const axisGeo = new THREE.BufferGeometry().setFromPoints([O, ends.x, O, ends.y, O, ends.z]);
+group.add(new THREE.LineSegments(axisGeo, new THREE.LineBasicMaterial({ color: 0x3A3A37 })));
+
+let pts = [], top;
 const pct = x => (x * 100).toFixed(1) + '%';
-
-function draw() {
-  pts = pts.concat(simulate());
-  svg.textContent = '';
-  const x0 = .03, x1 = .19, y0 = .065, y1 = .125;
-  const X = v => P.l + (v - x0) / (x1 - x0) * (W - P.l - P.r);
-  const Y = r => H - P.b - (r - y0) / (y1 - y0) * (H - P.t - P.b);
-  for (let v = .04; v <= .18; v += .04) {
-    el('line', { class: 'grid-line', x1: X(v), x2: X(v), y1: P.t, y2: H - P.b });
-    el('text', { class: 'axis', x: X(v), y: H - P.b + 20, 'text-anchor': 'middle' }).textContent = Math.round(v * 100) + '%';
-  }
-  for (let r = .07; r <= .12; r += .01) {
-    el('line', { class: 'grid-line', x1: P.l, x2: W - P.r, y1: Y(r), y2: Y(r) });
-    el('text', { class: 'axis', x: P.l - 8, y: Y(r) + 4, 'text-anchor': 'end' }).textContent = Math.round(r * 100) + '%';
-  }
-  el('text', { class: 'axis', x: W - P.r, y: H - 6, 'text-anchor': 'end' }).textContent = 'Volatility';
-  el('text', { class: 'axis', x: P.l, y: P.t - 2 + 10, 'text-anchor': 'start', dx: 8 }).textContent = 'Return';
-
-  const g = el('g', {});
-  const fresh = pts.length - N;
+function load() {
+  pts = simulate();
+  const pos = geo.attributes.position.array, col = geo.attributes.color.array;
+  const sMin = Math.min(...pts.map(p => p.sharpe)), sMax = Math.max(...pts.map(p => p.sharpe));
+  top = pts.reduce((a, b) => b.sharpe > a.sharpe ? b : a);
   pts.forEach((p, i) => {
-    const c = el('circle', { class: 'pt', cx: X(p.vol).toFixed(1), cy: Y(p.ret).toFixed(1), r: 2.4 }, g);
-    if (!reduce && i >= fresh) { c.style.opacity = 0; c.style.transition = 'opacity .4s'; setTimeout(() => c.style.opacity = '', (i - fresh) * .45); }
+    pos[i * 3] = X(p.vol); pos[i * 3 + 1] = Y(p.ret); pos[i * 3 + 2] = Z(p.div);
+    const s = (p.sharpe - sMin) / (sMax - sMin), c = .18 + .82 * s * s;
+    col[i * 3] = col[i * 3 + 1] = col[i * 3 + 2] = c;
   });
-
-  // Efficient frontier: from the min-volatility point, keep each point that beats every lower-volatility return.
-  const sorted = [...pts].sort((a, b) => a.vol - b.vol);
-  const edge = []; let best = -1;
-  for (const p of sorted) if (p.ret > best) { edge.push(p); best = p.ret; }
-  const path = el('polyline', { class: 'edge', points: edge.map(p => X(p.vol).toFixed(1) + ',' + Y(p.ret).toFixed(1)).join(' ') });
-  if (!reduce) {
-    const len = path.getTotalLength();
-    path.style.strokeDasharray = len; path.style.strokeDashoffset = len;
-    path.getBoundingClientRect();
-    path.style.transition = 'stroke-dashoffset 1.2s cubic-bezier(.2,.7,.2,1) .6s';
-    path.style.strokeDashoffset = 0;
-  }
-
-  const top = pts.reduce((a, b) => b.sharpe > a.sharpe ? b : a);
-  el('circle', { class: 'best', cx: X(top.vol), cy: Y(top.ret), r: 8 });
-  el('text', { class: 'best-label', x: X(top.vol) + 14, y: Y(top.ret) + 18 }).textContent = 'Best Sharpe';
-
-  document.getElementById('o-sharpe').textContent = top.sharpe.toFixed(2);
-  document.getElementById('o-ret').textContent = pct(top.ret);
-  document.getElementById('o-vol').textContent = pct(top.vol);
-  document.getElementById('o-w').innerHTML = 'Of ' + pts.length.toLocaleString('en-IN') + ' portfolios, the best holds ' +
-    top.w.map((w, i) => `<b>${Math.round(w * 100)}%</b> ${assets[i].name}`).join(', ') + '.';
-  document.getElementById('rerun').textContent = 'Run 2,000 more';
+  geo.attributes.position.needsUpdate = geo.attributes.color.needsUpdate = true;
+  bestGeo.attributes.position.array.set([X(top.vol), Y(top.ret), Z(top.div)]);
+  bestGeo.attributes.position.needsUpdate = true;
+  $('#o-s').textContent = top.sharpe.toFixed(2);
+  $('#o-r').textContent = pct(top.ret);
+  $('#o-v').textContent = pct(top.vol);
+  $('#o-w').innerHTML = 'Best mix: ' + top.w.map((w, i) => `<b>${Math.round(w * 100)}%</b> ${assets[i].name}`).join(', ');
+  drawMini();
 }
-draw();
-document.getElementById('rerun').addEventListener('click', draw);
+function grow(dur = 1.6) {
+  if (reduce || !hasGsap) { geo.setDrawRange(0, N); best.visible = true; $('#o-n').textContent = N.toLocaleString('en-IN'); return; }
+  const o = { n: 0 }; best.visible = false;
+  gsap.to(o, { n: N, duration: dur, ease: 'power2.out', onUpdate() { geo.setDrawRange(0, o.n | 0); $('#o-n').textContent = (o.n | 0).toLocaleString('en-IN'); }, onComplete() { best.visible = true; } });
+}
+
+// interaction
+let rotY = -.55, rotX = .18, tY = rotY, tX = rotX, drag = null, heroVisible = true, scrollK = 0;
+renderer.domElement.addEventListener('pointerdown', e => { drag = { x: e.clientX, y: e.clientY, ry: tY, rx: tX }; });
+addEventListener('pointerup', () => drag = null);
+addEventListener('pointermove', e => {
+  if (!drag) return;
+  tY = drag.ry + (e.clientX - drag.x) * .006;
+  if (e.pointerType === 'mouse') tX = Math.max(-.6, Math.min(.8, drag.rx + (e.clientY - drag.y) * .004));
+});
+new IntersectionObserver(([e]) => heroVisible = e.isIntersecting).observe(hero);
+
+const labels = { x: $('#ax-x'), y: $('#ax-y'), z: $('#ax-z') }, bestL = $('#best-l'), v3 = new THREE.Vector3();
+function place(el, vec) {
+  v3.copy(vec).applyMatrix4(group.matrixWorld).project(camera);
+  el.style.left = (v3.x + 1) / 2 * hero.clientWidth + 'px';
+  el.style.top = (1 - v3.y) / 2 * hero.clientHeight + 'px';
+}
+function resize() {
+  const w = hero.clientWidth, h = hero.clientHeight;
+  renderer.setSize(w, h, false);
+  camera.aspect = w / h;
+  // fit the cloud's ~8.6-unit width on narrow screens
+  camera.position.z = Math.max(12, 4.4 / (Math.tan(19 * Math.PI / 180) * camera.aspect));
+  group.position.set(w < 820 ? 0 : .3, w < 820 ? .4 : .7, 0);
+  camera.updateProjectionMatrix();
+}
+addEventListener('resize', resize); resize();
+load();
+(function frame() {
+  requestAnimationFrame(frame);
+  if (!heroVisible) return;
+  if (!drag && !reduce) tY += .0016;
+  rotY += (tY - rotY) * .08; rotX += (tX - rotX) * .08;
+  group.rotation.set(rotX, rotY, 0);
+  group.position.z = -scrollK * 6;
+  group.updateMatrixWorld();
+  for (const k in ends) place(labels[k], ends[k]);
+  if (best.visible) { bestL.style.display = ''; place(bestL, new THREE.Vector3(X(top.vol), Y(top.ret), Z(top.div))); } else bestL.style.display = 'none';
+  renderer.render(scene, camera);
+})();
+
+$('#rerun').addEventListener('click', () => { load(); grow(1.1); });
+
+/* ---------- mini scatter for the portfolio case ---------- */
+function drawMini() {
+  const W = 600, H = 380, sx = v => 40 + (v - .03) / .16 * (W - 60), sy = r => H - 30 - (r - .065) / .06 * (H - 50);
+  let s = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Volatility against return for the simulated portfolios, best Sharpe marked."><g fill="#0B0B0B" fill-opacity=".3">`;
+  pts.forEach((p, i) => { if (i % 2 === 0) s += `<circle cx="${sx(p.vol).toFixed(1)}" cy="${sy(p.ret).toFixed(1)}" r="2.2"/>`; });
+  s += `</g><circle cx="${sx(top.vol)}" cy="${sy(top.ret)}" r="8" fill="#FF4D00"/>`;
+  s += `<text x="${W - 20}" y="${H - 8}" text-anchor="end" font-size="13" fill="#5B5953">Volatility</text><text x="40" y="16" font-size="13" fill="#5B5953">Return</text></svg>`;
+  $('#mini').innerHTML = s;
+}
+
+
+/* ---------- smooth scroll ---------- */
+let lenis = null;
+if (!reduce && window.Lenis && hasGsap) {
+  lenis = new Lenis({ lerp: .09 });
+  lenis.on('scroll', ScrollTrigger.update);
+  gsap.ticker.add(t => lenis.raf(t * 1000));
+  gsap.ticker.lagSmoothing(0);
+}
+document.querySelectorAll('a[href^="#"]').forEach(a => a.addEventListener('click', e => {
+  const t = document.querySelector(a.getAttribute('href'));
+  if (!t) return;
+  e.preventDefault();
+  lenis ? lenis.scrollTo(t === $('#top') ? 0 : t, { duration: 1.4 }) : t.scrollIntoView();
+}));
+
+/* ---------- work index: hover preview + case studies ---------- */
+const preview = $('.preview'), pv = preview.querySelector('.pv');
+let mx = 0, my = 0, px = 0, py = 0;
+document.querySelectorAll('.row').forEach(row => {
+  const dlg = document.getElementById(row.dataset.case);
+  row.addEventListener('pointerenter', () => { if (!finePointer) return; pv.innerHTML = dlg.querySelector('.v').innerHTML; preview.classList.add('on'); });
+  row.addEventListener('pointerleave', () => preview.classList.remove('on'));
+  row.addEventListener('click', () => { preview.classList.remove('on'); dlg.showModal(); dlg.scrollTop = 0; lenis?.stop(); });
+});
+document.querySelectorAll('dialog.case').forEach(d => {
+  d.querySelector('.x').addEventListener('click', () => d.close());
+  d.addEventListener('close', () => lenis?.start());
+});
+addEventListener('pointermove', e => { mx = e.clientX; my = e.clientY; });
+(function follow() {
+  requestAnimationFrame(follow);
+  if (!preview.classList.contains('on')) { px = mx; py = my; }
+  px += (mx - px) * .14; py += (my - py) * .14;
+  const w = preview.offsetWidth, h = preview.offsetHeight;
+  const x = Math.min(px + 32, innerWidth - w - 16), y = Math.min(Math.max(py - h / 2, 16), innerHeight - h - 16);
+  preview.style.transform = `translate(${x}px, ${y}px) rotate(${(mx - px) * .03}deg)`;
+})();
+
+/* ---------- intro + scroll motion ---------- */
+const nameEl = $('#name');
+nameEl.innerHTML = [...nameEl.textContent].map(c => `<span class="ch" aria-hidden="true">${c === ' ' ? '&nbsp;' : c}</span>`).join('');
+
+let seen = false;
+try { seen = sessionStorage.getItem('intro') === '1'; sessionStorage.setItem('intro', '1'); } catch (e) {}
+
+if (!hasGsap || reduce) {
+  $('.loader').remove(); grow();
+} else {
+  const tl = gsap.timeline();
+  if (!seen) {
+    const c = { n: 0 };
+    lenis?.stop();
+    tl.to(c, { n: N, duration: 1.8, ease: 'power3.inOut', onUpdate() { $('.loader .count').textContent = (c.n | 0); } })
+      .to('.loader .bar', { scaleX: 1, duration: 1.8, ease: 'power3.inOut' }, 0)
+      .to('.loader', { clipPath: 'inset(0 0 100% 0)', duration: 1, ease: 'expo.inOut', onComplete() { $('.loader').remove(); lenis?.start(); } }, '+=.15');
+  } else $('.loader').remove();
+  tl.from('.name .ch', { yPercent: 105, duration: 1.1, stagger: .045, ease: 'expo.out' }, seen ? 0 : '-=.45')
+    .add(() => grow(), '<')
+    .from('.hero .intro, .hero .sim, .hud', { autoAlpha: 0, y: 16, duration: .8, stagger: .08, ease: 'power3.out' }, '<.3');
+
+  // hero exit: name and cloud drift as you leave
+  gsap.to('.hero .name', { yPercent: -40, ease: 'none', scrollTrigger: { trigger: hero, start: 'top top', end: 'bottom top', scrub: true } });
+  ScrollTrigger.create({ trigger: hero, start: 'top top', end: 'bottom top', onUpdate: s => scrollK = s.progress });
+
+  // headings and rows rise in
+  gsap.utils.toArray('.sec-head').forEach(el => gsap.from(el, { autoAlpha: 0, y: 20, duration: .8, ease: 'power3.out', scrollTrigger: { trigger: el, start: 'top 90%' } }));
+  gsap.from('.row .t', { yPercent: 100, autoAlpha: 0, duration: 1, stagger: .09, ease: 'expo.out', clearProps: 'transform', scrollTrigger: { trigger: '.index', start: 'top 80%' } });
+  gsap.from('.contact .big, footer .end', { yPercent: 40, autoAlpha: 0, duration: 1.2, ease: 'expo.out', stagger: .1, scrollTrigger: { trigger: '.contact .big', start: 'top 90%' } });
+  gsap.from('tbody tr', { autoAlpha: 0, y: 12, duration: .6, stagger: .04, ease: 'power2.out', scrollTrigger: { trigger: 'table', start: 'top 85%' } });
+  gsap.from('.about .cols p', { autoAlpha: 0, y: 24, duration: .9, stagger: .1, ease: 'power3.out', scrollTrigger: { trigger: '.about .cols', start: 'top 85%' } });
+
+  // statement lights up word by word as you scroll through it
+  const st = $('#statement');
+  st.innerHTML = st.textContent.split(' ').map(w => `<span class="wd">${w}</span>`).join(' ');
+  gsap.fromTo('#statement .wd', { opacity: .14 }, { opacity: 1, stagger: .1, ease: 'none', scrollTrigger: { trigger: st, start: 'top 80%', end: 'bottom 45%', scrub: true } });
+}
 </script>
 </body>
 </html>
