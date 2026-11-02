@@ -143,6 +143,7 @@ dialog.case::backdrop { background: transparent; }
 .case .stack { color: #5B5953; font-size: 15px; }
 .case .gh { display: inline-block; margin-top: 20px; font-weight: 700; text-underline-offset: 5px; }
 .case .gh:hover { color: var(--accent); }
+.case .gh + .gh { margin-left: 24px; }
 .case .v { background: #E6E3DC; padding: clamp(16px, 2vw, 28px); }
 
 /* about */
