@@ -188,8 +188,9 @@ tbody tr:hover td i { background: var(--accent); }
 .social { list-style: none; font-size: 18px; text-align: right; }
 .social a { text-decoration: none; }
 .social a:hover { color: var(--accent); }
-footer { padding: clamp(120px, 14vw, 200px) var(--m) var(--m); overflow: hidden; }
-footer .end { font-size: 21.4vw; line-height: .78; color: var(--fg); white-space: nowrap; margin-left: -.02em; }
+footer { padding: clamp(120px, 14vw, 200px) var(--m) calc(var(--m) + 64px); overflow: hidden; }
+footer .end-l { font-size: clamp(1.1rem, 1.8vw, 1.6rem); font-weight: 500; margin-bottom: 12px; }
+footer .end { font-variant-numeric: tabular-nums; font-size: 24vw; line-height: .78; color: var(--fg); white-space: nowrap; margin-left: -.02em; }
 footer .meta { display: flex; justify-content: space-between; font-size: 14px; color: var(--mute); margin-top: 20px; }
 
 /* reveal helpers */
@@ -304,8 +305,9 @@ footer .meta { display: flex; justify-content: space-between; font-size: 14px; c
 </main>
 
 <footer>
-  <p class="end cond" aria-hidden="true">Atul Vinod</p>
-  <div class="meta"><span>© 2026</span><a href="#top">Back to top</a></div>
+  <p class="end-l" id="cd-l">Next NSE open in</p>
+  <p class="end cond" id="cd" aria-hidden="true">00:00:00</p>
+  <div class="meta"><span>© 2026 Atul Vinod. NSE hours Mon to Fri, 09:15 to 15:30 IST; holidays not counted.</span><a href="#top">Back to top</a></div>
 </footer>
 
 <div class="preview" aria-hidden="true"><div class="open">Open</div><div class="pv v"></div></div>
@@ -443,6 +445,20 @@ function market() {
   $('#mk').textContent = open ? 'NSE open, closes 15:30'
     : weekday && t < 555 ? 'NSE closed, opens 09:15'
     : wd === 'Fri' || !weekday ? 'NSE closed, opens Mon 09:15' : 'NSE closed, opens 09:15 tomorrow';
+
+  // footer countdown to the next open or close
+  const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  const now = t * 60 + +p.second;
+  let left;
+  if (open) left = 930 * 60 - now;
+  else {
+    let d = weekday && t < 555 ? 0 : 1;
+    while (['Sat', 'Sun'].includes(days[(days.indexOf(wd) + d) % 7])) d++;
+    left = d * 86400 + 555 * 60 - now;
+  }
+  const pad = n => String(n).padStart(2, '0');
+  $('#cd').textContent = `${pad(left / 3600 | 0)}:${pad(left % 3600 / 60 | 0)}:${pad(left % 60)}`;
+  $('#cd-l').textContent = open ? 'NSE closes in' : 'Next NSE open in';
 }
 market(); setInterval(market, 1000);
 
