@@ -1,355 +1,513 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Atul Vinod | Building Analytical Solutions</title>
-    <meta name="description"
-        content="Atul Vinod's Portfolio - MBA Student & Computer Science Graduate specializing in Analytics, Machine Learning, and Cloud Platforms.">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Atul Vinod</title>
+<meta name="description" content="Atul Vinod builds tools that turn market and business data into decisions: a daily stock scanner, risk scoring, portfolio optimisation and customer analytics.">
+<meta property="og:title" content="Atul Vinod">
+<meta property="og:description" content="Tools that turn market and business data into decisions.">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --paper: #EEF0F3;
+  --paper-2: #E1E5EB;
+  --ink: #172433;
+  --ink-2: #22324A;
+  --ink-soft: #4A5869;
+  --on-ink: #EEF0F3;
+  --on-ink-soft: #AEB8C6;
+  --accent: #2547D0;
+  --accent-on-ink: #7F9BFF;
+  --gain: #2E9E6A;
+  --loss: #D24B3E;
+  --m: clamp(16px, 4vw, 48px);
+  --gap: clamp(96px, 14vw, 200px);
+  --ease: cubic-bezier(.2, .7, .2, 1);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--paper); color: var(--ink);
+  font: 400 18px/1.55 "Schibsted Grotesk", system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+a { color: inherit; }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+.wrap { padding-inline: var(--m); max-width: 1440px; margin-inline: auto; }
 
-    <!-- Open Graph -->
-    <meta property="og:title" content="Atul Vinod | Building Analytical Solutions">
-    <meta property="og:description"
-        content="MBA Student & Computer Science Graduate specializing in Analytics, Machine Learning, and Cloud Platforms.">
-    <meta property="og:type" content="website">
+/* nav */
+.nav { display: flex; align-items: center; gap: 32px; padding-block: 20px; }
+.nav .name { font-weight: 800; text-decoration: none; margin-right: auto; }
+.nav a:not(.name):not(.btn) { text-decoration: none; color: var(--ink-soft); }
+.nav a:not(.name):not(.btn):hover { color: var(--ink); }
 
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700&family=Outfit:wght@500;600;700&display=swap"
-        rel="stylesheet">
+.btn {
+  display: inline-block; padding: 14px 24px; border-radius: 999px; border: 0;
+  background: var(--accent); color: #fff; font-family: inherit; font-size: 17px; font-weight: 500; line-height: 1;
+  text-decoration: none; cursor: pointer; transition: transform .15s var(--ease), background .15s;
+}
+.btn:hover { background: #1B38AE; }
+.btn:active { transform: scale(.97); }
+.btn.quiet { background: var(--paper-2); color: var(--ink); }
+.btn.quiet:hover { background: #D3D9E1; }
 
-    <!-- Styles -->
-    <link rel="stylesheet" href="style.css">
+/* hero */
+.hero h1 {
+  font-size: clamp(4rem, 15.5vw, 14.5rem); font-weight: 800; line-height: .9;
+  letter-spacing: -.045em; margin: clamp(24px, 5vw, 64px) 0 clamp(32px, 4vw, 56px) -.05em;
+}
+.hero-grid { display: grid; grid-template-columns: 5fr 7fr; gap: clamp(32px, 5vw, 80px); align-items: start; }
+.lede { font-size: clamp(1.4rem, 2.2vw, 2rem); line-height: 1.25; letter-spacing: -.01em; font-weight: 500; max-width: 22ch; }
+.hero .sub { margin-top: 24px; color: var(--ink-soft); max-width: 40ch; }
+.hero .actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 32px; }
 
-    <!-- Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+.frontier { background: var(--paper-2); padding: clamp(16px, 2vw, 28px); }
+.frontier svg { width: 100%; height: auto; display: block; }
+.frontier .axis { font-size: 13px; fill: var(--ink-soft); }
+.frontier .grid-line { stroke: #CBD2DB; stroke-width: 1; }
+.frontier .pt { fill: var(--ink); fill-opacity: .28; }
+.frontier .edge { fill: none; stroke: var(--accent); stroke-width: 2.5; }
+.frontier .best { fill: var(--accent); stroke: var(--paper-2); stroke-width: 3; }
+.frontier .best-label { font-size: 14px; font-weight: 700; fill: var(--accent); }
+.fig-foot { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 16px; margin-top: 16px; }
+.readout { display: grid; grid-template-columns: repeat(3, auto); gap: 4px 28px; }
+.readout dt { font-size: 14px; color: var(--ink-soft); }
+.readout dd { font-size: 1.6rem; font-weight: 700; letter-spacing: -.02em; }
+.weights { margin-top: 12px; font-size: 15px; color: var(--ink-soft); }
+.weights b { color: var(--ink); font-weight: 500; }
+.fig-note { font-size: 14px; color: var(--ink-soft); margin-top: 12px; max-width: 60ch; }
+
+/* projects field */
+.projects { background: var(--ink); color: var(--on-ink); margin-top: var(--gap); padding-block: clamp(80px, 10vw, 160px); }
+.projects h2, .about h2, .tools h2, .contact h2 {
+  font-size: clamp(2.8rem, 7vw, 6rem); font-weight: 800; line-height: .95; letter-spacing: -.04em;
+}
+.proj { display: grid; grid-template-columns: repeat(12, 1fr); gap: clamp(24px, 4vw, 64px); margin-top: clamp(80px, 10vw, 160px); }
+.proj h3 { font-size: clamp(1.8rem, 3.4vw, 3rem); font-weight: 700; line-height: 1.02; letter-spacing: -.03em; margin-bottom: 20px; }
+.proj p { color: var(--on-ink); max-width: 56ch; }
+.proj p + p { margin-top: 14px; }
+.proj .stack { margin-top: 20px; font-size: 15px; color: var(--on-ink-soft); }
+.proj .link { display: inline-block; margin-top: 20px; color: var(--accent-on-ink); font-weight: 500; text-underline-offset: 4px; }
+.proj .link:hover { color: #fff; }
+.proj .text { grid-column: span 5; }
+.proj .figure { grid-column: span 7; }
+.proj.flip .text { order: 2; }
+.panel { background: var(--ink-2); padding: clamp(20px, 2.4vw, 36px); }
+.cap { font-size: 14px; color: var(--on-ink-soft); margin-top: 14px; }
+
+/* scanner */
+.pipeline { list-style: none; counter-reset: none; display: grid; gap: 6px; }
+.pipeline li { display: grid; grid-template-columns: 1fr auto; gap: 16px; padding: 12px 16px; background: rgba(238,240,243,.05); }
+.pipeline li span:last-child { color: var(--on-ink-soft); font-size: 15px; text-align: right; }
+.pipeline li.out { background: var(--accent); color: #fff; }
+.pipeline li.out span:last-child { color: #DCE3FF; }
+.run { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 28px; }
+.run div { background: rgba(238,240,243,.05); padding: 16px; }
+.run b { display: block; font-size: clamp(1.8rem, 3vw, 2.6rem); font-weight: 800; letter-spacing: -.03em; line-height: 1.1; }
+.run .off { color: #F08A7F; }
+.run span { font-size: 14px; color: var(--on-ink-soft); }
+.rules { margin-top: 20px; display: grid; grid-template-columns: auto 1fr; gap: 6px 20px; font-size: 15px; }
+.rules dt { color: var(--on-ink-soft); }
+
+/* risk drivers */
+.case { display: grid; gap: 18px; margin-top: 8px; }
+.case h4 { font-size: 15px; font-weight: 700; color: var(--accent-on-ink); margin-bottom: 4px; }
+.drivers { display: grid; gap: 18px; }
+.drivers .row { display: grid; grid-template-columns: 11rem 1fr; gap: 16px; align-items: center; font-size: 16px; }
+.drivers .bar { height: 28px; background: var(--loss); transform-origin: left; }
+.drivers .bar.down { background: var(--gain); }
+.flag { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 28px; gap: 16px; flex-wrap: wrap; }
+.flag strong { font-size: clamp(1.4rem, 2.4vw, 2rem); letter-spacing: -.02em; }
+.flag span { color: #F08A7F; font-weight: 700; }
+
+/* portfolio */
+.proj.wide .text { grid-column: 1 / span 7; }
+.proj.wide aside { grid-column: 9 / span 4; align-self: end; font-size: clamp(1.2rem, 1.8vw, 1.5rem); line-height: 1.3; color: var(--on-ink); }
+
+/* rfm */
+.rfm { display: grid; grid-template-columns: auto repeat(5, 1fr); grid-template-rows: repeat(5, minmax(56px, 1fr)) auto; gap: 4px; font-size: 14px; }
+.rfm .c { padding: 8px; display: flex; align-items: flex-end; font-weight: 500; line-height: 1.15; }
+.rfm .yl, .rfm .xl { color: var(--on-ink-soft); display: flex; align-items: center; justify-content: center; }
+.rfm .xl { padding-top: 6px; }
+.seg-champ { background: var(--gain); color: #fff; }
+.seg-loyal { background: #2A7A57; color: #fff; }
+.seg-new { background: #3B5BDB; color: #fff; }
+.seg-mid { background: #34465F; }
+.seg-risk { background: #B5473C; color: #fff; }
+.seg-lost { background: #2B394D; color: var(--on-ink-soft); }
+
+/* about */
+.about { margin-top: var(--gap); }
+.about-grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: clamp(24px, 4vw, 64px); margin-top: 48px; }
+.about-grid .big { grid-column: span 6; font-size: clamp(1.4rem, 2.2vw, 2rem); line-height: 1.3; font-weight: 500; letter-spacing: -.01em; max-width: 26ch; }
+.about-grid .body { grid-column: 7 / span 6; display: grid; gap: 16px; max-width: 60ch; }
+
+/* tools */
+.tools { margin-top: var(--gap); }
+.tools-grid { display: grid; grid-template-columns: 4fr 8fr; gap: clamp(24px, 4vw, 64px); margin-top: 48px; align-items: start; }
+.tools-grid p { max-width: 36ch; }
+.tools-grid p + p { margin-top: 16px; color: var(--ink-soft); }
+.tbl-wrap { overflow-x: auto; }
+table { font-variant-numeric: tabular-nums; width: 100%; border-collapse: collapse; font-size: 16px; }
+th, td { padding: 12px 10px; text-align: left; }
+thead th { font-weight: 500; color: var(--ink-soft); font-size: 15px; vertical-align: bottom; }
+tbody tr:nth-child(odd) { background: var(--paper-2); }
+tbody th { font-weight: 700; }
+td { text-align: center; width: 15%; }
+thead th:not(:first-child) { text-align: center; }
+.dot { display: inline-block; width: 14px; height: 14px; border-radius: 50%; background: var(--ink); }
+
+/* contact */
+.contact { margin-top: var(--gap); background: var(--accent); color: #fff; padding-block: clamp(80px, 10vw, 140px); }
+.contact h2 { margin-bottom: 32px; }
+.contact .mail { font-size: clamp(1.5rem, 4vw, 3.6rem); font-weight: 700; letter-spacing: -.03em; line-height: 1.05; text-decoration: none; overflow-wrap: anywhere; }
+.contact .mail:hover { text-decoration: underline; text-decoration-thickness: 4px; text-underline-offset: 8px; }
+.contact-grid { display: grid; grid-template-columns: 8fr 4fr; gap: 32px; align-items: end; }
+.contact p { max-width: 40ch; margin-bottom: 24px; color: #DCE3FF; }
+.social { list-style: none; display: grid; gap: 12px; font-size: 20px; }
+.social a { display: inline-flex; align-items: center; gap: 12px; text-decoration: none; font-weight: 500; }
+.social a:hover { text-decoration: underline; text-underline-offset: 5px; }
+.social svg { width: 24px; height: 24px; fill: currentColor; }
+
+footer { background: var(--ink); color: var(--on-ink); padding-block: 48px 24px; overflow: hidden; }
+footer .big { font-size: clamp(4rem, 17.4vw, 16rem); font-weight: 800; letter-spacing: -.05em; line-height: .8; margin-left: -.05em; white-space: nowrap; }
+footer .meta { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; margin-top: 32px; font-size: 14px; color: var(--on-ink-soft); }
+
+/* motion */
+.js .rise { opacity: 0; transform: translateY(24px); transition: opacity .7s var(--ease), transform .7s var(--ease); transition-delay: calc(var(--i, 0) * 80ms); }
+.js .rise.in { opacity: 1; transform: none; }
+.js .drivers .bar { transform: scaleX(0); transition: transform 1s var(--ease); transition-delay: calc(var(--i, 0) * 120ms + 200ms); }
+.js .drivers.in .bar { transform: scaleX(1); }
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .js .rise, .js .drivers .bar { opacity: 1; transform: none; transition: none; }
+}
+
+/* phone */
+@media (max-width: 900px) {
+  .hero-grid, .tools-grid, .contact-grid { grid-template-columns: 1fr; }
+  .proj .text, .proj .figure, .proj.wide .text, .proj.wide aside, .about-grid .big, .about-grid .body { grid-column: 1 / -1; }
+  .proj.flip .text { order: 0; }
+  .nav a:not(.name):not(.btn) { display: none; }
+}
+@media (max-width: 560px) {
+  body { font-size: 17px; }
+  .readout { grid-template-columns: repeat(3, auto); gap: 2px 16px; }
+  .readout dd { font-size: 1.25rem; }
+  .run { grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+  .run div { padding: 12px 10px; }
+  .drivers .row { grid-template-columns: 1fr; gap: 6px; }
+  .pipeline li { grid-template-columns: 1fr; gap: 2px; }
+  .pipeline li span:last-child { text-align: left; }
+  .frontier .axis { font-size: 22px; }
+  .frontier .best-label { font-size: 24px; }
+  .rfm { font-size: 12px; }
+  .rfm .c { padding: 5px; }
+  th, td { padding: 10px 6px; }
+}
+</style>
 </head>
-
 <body>
-    <div id="particles-js"></div>
+<script>document.documentElement.classList.add('js')</script>
 
-    <!-- Header -->
-    <header>
-        <div class="header-content">
-            <div class="logo">
-                <h1>Atul Vinod</h1>
-                <p>Building Analytical Solutions</p>
-            </div>
-            <nav>
-                <ul>
-                    <li><a href="#home">Home</a></li>
-                    <li><a href="#about">About</a></li>
-                    <li><a href="#projects">Projects</a></li>
-                    <li><a href="#skills">Skills</a></li>
-                    <li><a href="#contact">Contact</a></li>
-                </ul>
-            </nav>
+<header class="wrap nav">
+  <a class="name" href="#top">Atul Vinod</a>
+  <a href="#projects">Projects</a>
+  <a href="#about">About</a>
+  <a href="#contact">Contact</a>
+  <a class="btn" href="mailto:atulvinod2001@gmail.com">Email me</a>
+</header>
+
+<main id="top">
+  <section class="wrap hero" aria-labelledby="hero-title">
+    <h1 id="hero-title" class="rise">Atul Vinod</h1>
+    <div class="hero-grid">
+      <div>
+        <p class="lede rise" style="--i:1">I build tools that turn market and business data into decisions.</p>
+        <p class="sub rise" style="--i:2">MBA student with a computer science degree. I'm working on a daily stock scanner and risk models, and I'm open to analytics and data science roles.</p>
+        <div class="actions rise" style="--i:3">
+          <a class="btn" href="#projects">See the projects</a>
+          <a class="btn quiet" href="mailto:atulvinod2001@gmail.com">Email me</a>
         </div>
-    </header>
+      </div>
 
-    <main>
-        <!-- Home Section -->
-        <section id="home" class="home">
-            <div class="home-content fade-up">
-                <div class="status-badge">
-                    <span class="status-dot"></span>
-                    Open to Analytics & Data Science Opportunities
-                </div>
-                <p class="highlight">Hello, I'm</p>
-                <h2>Atul Vinod</h2>
-                <div class="typing-text"
-                    data-text="I build data-driven solutions that transform complex problems into actionable insights.">
-                    I build data-driven solutions that transform complex problems into actionable insights.
-                </div>
-                <div class="hero-cta">
-                    <a href="#projects" class="cta-button">View My Work</a>
-                    <a href="#contact" class="cta-button-secondary">Get in Touch</a>
-                </div>
-            </div>
-            <div class="scroll-down">
-                <span></span>
-                <span></span>
-                <span></span>
-            </div>
-        </section>
-
-        <!-- About Section -->
-        <section id="about" class="about">
-            <div class="section-container">
-                <h2 class="section-title fade-up">About Me</h2>
-                <div class="about-content fade-up">
-                    <div class="about-text">
-                        <p class="about-intro">
-                            I'm an <strong>MBA student with a Computer Science background</strong>, passionate about
-                            bridging the gap between technical analytics and business strategy.
-                        </p>
-                        <p>
-                            My journey started with building software, but I quickly realized the real impact comes from
-                            turning data into decisions. Whether it's optimizing investment portfolios, detecting fraud
-                            patterns, or uncovering customer insights—I love solving problems that matter.
-                        </p>
-                        <p>
-                            Currently, I'm focused on <strong>machine learning applications in finance</strong> and
-                            exploring how AI can make enterprise risk management more accessible to decision-makers.
-                        </p>
-                        <p class="about-personal">
-                            When I'm not diving into datasets, you'll find me exploring new tech, reading about
-                            behavioral economics, or experimenting with side projects that probably won't make money but
-                            will definitely teach me something.
-                        </p>
-                    </div>
-                    <div class="credentials">
-                        <h4>Credentials</h4>
-                        <div class="credential-badges">
-                            <div class="credential-badge">
-                                <img src="public/logos/aws.svg" alt="AWS">
-                                <span>AWS Cloud Practitioner</span>
-                            </div>
-                            <div class="credential-badge">
-                                <i class="fas fa-file-excel"></i>
-                                <span>Microsoft Excel Associate</span>
-                            </div>
-                            <div class="credential-badge">
-                                <i class="fab fa-google"></i>
-                                <span>Google AI Essentials</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Projects Section -->
-        <section id="projects" class="projects">
-            <div class="section-container">
-                <h2 class="section-title fade-up">Featured Projects</h2>
-
-                <!-- Featured Case Study -->
-                <div class="featured-project glass-card fade-up">
-                    <div class="featured-badge">✦ Featured Case Study</div>
-                    <div class="featured-content">
-                        <div class="featured-image">
-                            <img src="public/risk_management.png" alt="Enterprise Risk Management Dashboard">
-                        </div>
-                        <div class="featured-details">
-                            <h3>Enterprise Risk Management</h3>
-                            <div class="tech-stack">
-                                <span class="tech-tag">Python</span>
-                                <span class="tech-tag">Streamlit</span>
-                                <span class="tech-tag">Hybrid AI</span>
-                                <span class="tech-tag">SHAP</span>
-                            </div>
-
-                            <div class="case-study">
-                                <div class="case-section">
-                                    <h4>The Problem</h4>
-                                    <p>Financial institutions struggle to separate genuine fraud signals from
-                                        operational noise, leading to alert fatigue and missed threats.</p>
-                                </div>
-                                <div class="case-section">
-                                    <h4>My Approach</h4>
-                                    <p>Built a hybrid anomaly detection system combining statistical methods with ML
-                                        classifiers, then translated technical scores into business-readable "Risk
-                                        Drivers" using SHAP explainability.</p>
-                                </div>
-                                <div class="case-section">
-                                    <h4>The Results</h4>
-                                    <ul class="results-list">
-                                        <li><strong>40% reduction</strong> in financial risk exposure</li>
-                                        <li><strong>Accelerated security audits</strong> with executive-ready dashboards
-                                        </li>
-                                        <li><strong>Actionable insights</strong> replacing black-box predictions</li>
-                                    </ul>
-                                </div>
-                            </div>
-
-                            <div class="project-footer">
-                                <a href="https://github.com/atulvinod01/EnterpriseRiskManagement" target="_blank"
-                                    class="project-link">
-                                    <i class="fab fa-github"></i> View on GitHub
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Other Projects Grid -->
-                <div class="projects-grid">
-                    <div class="project-card glass-card fade-up">
-                        <div class="project-image">
-                            <img src="public/portfolio_optimization.png" alt="Portfolio Optimization Dashboard">
-                        </div>
-                        <div class="project-content">
-                            <div class="project-header">
-                                <h3>Quantitative Portfolio Optimization</h3>
-                                <div class="tech-stack">
-                                    <span class="tech-tag">Python</span>
-                                    <span class="tech-tag">Streamlit</span>
-                                    <span class="tech-tag">NumPy</span>
-                                    <span class="tech-tag">yfinance</span>
-                                </div>
-                            </div>
-                            <div class="project-body">
-                                <p>Monte Carlo simulation engine for maximizing Sharpe Ratio and analyzing VaR. Features
-                                    real-time data fetching and interactive Efficient Frontier visualization.</p>
-                            </div>
-                            <div class="project-footer">
-                                <a href="https://github.com/atulvinod01/QuantitativePortfolioOptimization"
-                                    target="_blank" class="project-link">
-                                    <i class="fab fa-github"></i> View Project
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="project-card glass-card fade-up delay-100">
-                        <div class="project-image">
-                            <img src="public/ecommerce_analysis.png" alt="E-Commerce Analysis Dashboard">
-                        </div>
-                        <div class="project-content">
-                            <div class="project-header">
-                                <h3>E-Commerce Strategic Analysis</h3>
-                                <div class="tech-stack">
-                                    <span class="tech-tag">Python</span>
-                                    <span class="tech-tag">SQLite</span>
-                                    <span class="tech-tag">Pandas</span>
-                                    <span class="tech-tag">Seaborn</span>
-                                </div>
-                            </div>
-                            <div class="project-body">
-                                <p>RFM segmentation and cohort analysis to identify "Champions" and "At Risk" customers.
-                                    Transforms raw transactions into actionable retention strategies.</p>
-                            </div>
-                            <div class="project-footer">
-                                <a href="https://github.com/atulvinod01/E-CommerceSalesAnalysis" target="_blank"
-                                    class="project-link">
-                                    <i class="fab fa-github"></i> View Project
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Skills Section -->
-        <section id="skills" class="skills">
-            <div class="section-container">
-                <h2 class="section-title fade-up">Skills & Tools</h2>
-                <div class="skills-wrapper">
-                    <div class="skill-category fade-up">
-                        <h3>Data & Analytics</h3>
-                        <div class="skill-grid">
-                            <div class="skill-card glass-card">
-                                <img src="public/logos/python.svg" alt="Python">
-                                <span>Python</span>
-                            </div>
-                            <div class="skill-card glass-card">
-                                <img src="public/logos/pandas.svg" alt="Pandas">
-                                <span>Pandas</span>
-                            </div>
-                            <div class="skill-card glass-card">
-                                <img src="public/logos/numpy.svg" alt="NumPy">
-                                <span>NumPy</span>
-                            </div>
-                            <div class="skill-card glass-card">
-                                <img src="public/logos/mysql.svg" alt="SQL">
-                                <span>SQL</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="skill-category fade-up">
-                        <h3>Visualization & ML</h3>
-                        <div class="skill-grid">
-                            <div class="skill-card glass-card">
-                                <img src="public/logos/matplotlib.png" alt="Matplotlib">
-                                <span>Matplotlib</span>
-                            </div>
-                            <div class="skill-card glass-card">
-                                <img src="public/logos/seaborn.png" alt="Seaborn">
-                                <span>Seaborn</span>
-                            </div>
-                            <div class="skill-card glass-card">
-                                <div class="text-icon">🤖</div>
-                                <span>Scikit-learn</span>
-                            </div>
-                            <div class="skill-card glass-card">
-                                <div class="text-icon">📊</div>
-                                <span>Streamlit</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="skill-category fade-up">
-                        <h3>Cloud & Infrastructure</h3>
-                        <div class="skill-grid">
-                            <div class="skill-card glass-card">
-                                <img src="public/logos/aws.svg" alt="AWS">
-                                <span>AWS</span>
-                            </div>
-                            <div class="skill-card glass-card">
-                                <div class="text-icon">🐙</div>
-                                <span>Git</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Testimonial Section -->
-        <section id="testimonial" class="testimonial">
-            <div class="section-container">
-                <div class="testimonial-card glass-card fade-up">
-                    <div class="quote-icon"><i class="fas fa-quote-left"></i></div>
-                    <blockquote>
-                        "The best analysts don't just crunch numbers—they translate complexity into clarity. That's
-                        where real business value is created."
-                    </blockquote>
-                    <div class="quote-attribution">— Philosophy I work by</div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Contact Section -->
-        <section id="contact" class="contact">
-            <div class="section-container">
-                <h2 class="section-title fade-up">Let's Connect</h2>
-                <div class="contact-content fade-up">
-                    <p class="contact-text">I'm always interested in hearing about new opportunities, interesting
-                        projects, or just connecting with fellow data enthusiasts.</p>
-                    <div class="contact-links">
-                        <a href="mailto:atulvinod2001@gmail.com" class="contact-btn primary">
-                            <i class="fas fa-envelope"></i> Say Hello
-                        </a>
-                        <a href="https://www.linkedin.com/in/atul-vinod-9083b5225" target="_blank" class="contact-btn">
-                            <i class="fab fa-linkedin"></i> LinkedIn
-                        </a>
-                        <a href="https://github.com/atulvinod01" target="_blank" class="contact-btn">
-                            <i class="fab fa-github"></i> GitHub
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </section>
-    </main>
-
-    <footer>
-        <p>Designed & Built by Atul Vinod</p>
-        <p class="footer-credentials">AWS Certified Cloud Practitioner · Microsoft Office Specialist · Google AI
-            Certified</p>
-        <p class="copyright">&copy; 2025 All rights reserved.</p>
-    </footer>
-
-    <div class="back-to-top">
-        <i class="fas fa-arrow-up"></i>
+      <figure class="frontier rise" style="--i:2" aria-labelledby="frontier-cap">
+        <svg id="frontier" viewBox="0 0 640 400" role="img" aria-label="Scatter of simulated portfolios by volatility and return, with the efficient frontier and the highest-Sharpe portfolio marked."></svg>
+        <div class="fig-foot">
+          <dl class="readout" aria-live="polite">
+            <div><dt>Best Sharpe</dt><dd id="o-sharpe">0.00</dd></div>
+            <div><dt>Return</dt><dd id="o-ret">0%</dd></div>
+            <div><dt>Volatility</dt><dd id="o-vol">0%</dd></div>
+          </dl>
+          <button class="btn" id="rerun" type="button">Run 2,000 more</button>
+        </div>
+        <p class="weights" id="o-w"></p>
+        <figcaption class="fig-note" id="frontier-cap">2,000 random portfolios of four assets, simulated in your browser. The line is the efficient frontier; the blue point has the best return per unit of risk. Returns and volatilities are assumed for the demo, risk-free rate 6.5%.</figcaption>
+      </figure>
     </div>
+  </section>
 
-    <!-- Scripts -->
-    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
-    <script src="script.js"></script>
+  <section class="projects" id="projects" aria-labelledby="projects-title">
+    <div class="wrap">
+      <h2 id="projects-title" class="rise">Projects</h2>
+
+      <article class="proj">
+        <div class="text">
+          <h3 class="rise">Swing scanner for the Nifty 200</h3>
+          <p class="rise" style="--i:1">Every weekday at 16:30 IST, after the market closes, it scans the Nifty 200 for long-only swing setups and publishes up to three paper trades with entry, stop and target.</p>
+          <p class="rise" style="--i:2">It reads the market first. When the index is below its 50-day average and breadth is weak, it opens nothing and keeps a watchlist. Every published signal is replayed against later prices, so the results are tracked in R, not guessed.</p>
+          <dl class="rules rise" style="--i:3">
+            <dt>Reward to risk</dt><dd>at least 2.0, target at 2.5R</dd>
+            <dt>Stop</dt><dd>no wider than 8%</dd>
+            <dt>Time exit</dt><dd>after 15 sessions</dd>
+            <dt>Costs</dt><dd>0.25% round trip, counted in</dd>
+          </dl>
+          <p class="stack rise" style="--i:4">Python, pandas, yfinance, Vercel cron and Blob, Claude or Gemini for the news check</p>
+          <a class="link rise" style="--i:5" href="https://github.com/atulvinod01/swing-scanner" target="_blank" rel="noopener">Source on GitHub</a>
+        </div>
+        <div class="figure">
+          <div class="panel rise" style="--i:1">
+            <ol class="pipeline" aria-label="Scan pipeline, in order">
+              <li><span>Nifty 200 universe</span><span>200 stocks</span></li>
+              <li><span>Liquidity and price filter</span><span>Rs 20 Cr turnover, Rs 50 min</span></li>
+              <li><span>Market regime</span><span>risk-on, mixed or risk-off</span></li>
+              <li><span>Three setup detectors</span><span>pullback, breakout, RS leader</span></li>
+              <li><span>Score, entry, stop, target</span><span>cutoff 65 or 72</span></li>
+              <li><span>Results-date check</span><span>skip if due in 21 days</span></li>
+              <li><span>News check</span><span>can only downgrade</span></li>
+              <li class="out"><span>Paper picks</span><span>up to 3</span></li>
+            </ol>
+            <div class="run">
+              <div><b class="off">Risk-off</b><span>regime</span></div>
+              <div><b>10</b><span>setups found</span></div>
+              <div><b>0</b><span>picks published</span></div>
+            </div>
+          </div>
+          <p class="cap">Test run on 27 Oct 2026 data: 192 of 200 symbols fetched in about 40 seconds. The market was risk-off, so the 10 setups went to the watchlist.</p>
+        </div>
+      </article>
+
+      <article class="proj flip">
+        <div class="text">
+          <h3 class="rise">Enterprise risk management</h3>
+          <div class="case">
+            <div class="rise" style="--i:1"><h4>The problem</h4><p>Fraud teams drown in alerts. Real signals get lost in operational noise, and analysts stop trusting the scores.</p></div>
+            <div class="rise" style="--i:2"><h4>What I built</h4><p>A hybrid anomaly detector: statistical checks and ML classifiers together, with SHAP turning every score into the few risk drivers behind it, in words a manager can act on.</p></div>
+            <div class="rise" style="--i:3"><h4>The result</h4><p>A 40% reduction in financial risk exposure, faster security audits, and dashboards executives read without a translator.</p></div>
+          </div>
+          <p class="stack rise" style="--i:4">Python, scikit-learn, SHAP, Streamlit</p>
+          <a class="link rise" style="--i:5" href="https://github.com/atulvinod01/EnterpriseRiskManagement" target="_blank" rel="noopener">Source on GitHub</a>
+        </div>
+        <div class="figure">
+          <div class="panel rise" style="--i:1">
+            <div class="flag"><strong>Transaction flagged</strong><span>High risk</span></div>
+            <div class="drivers" role="img" aria-label="Example risk drivers for a flagged transaction, largest first: transfer amount versus history, new device, login location, account age. Account age lowers the risk.">
+              <div class="row"><span>Amount vs. history</span><div class="bar" style="width:92%;--i:0"></div></div>
+              <div class="row"><span>New device</span><div class="bar" style="width:64%;--i:1"></div></div>
+              <div class="row"><span>Login location</span><div class="bar" style="width:47%;--i:2"></div></div>
+              <div class="row"><span>Account age</span><div class="bar down" style="width:22%;--i:3"></div></div>
+            </div>
+          </div>
+          <p class="cap">How a flagged case reads: the drivers pushing the score up in red, the one pulling it down in green. Example case, not real data.</p>
+        </div>
+      </article>
+
+      <article class="proj wide">
+        <div class="text">
+          <h3 class="rise">Quantitative portfolio optimisation</h3>
+          <p class="rise" style="--i:1">A Monte Carlo engine that pulls live prices, simulates thousands of portfolios, finds the one with the best Sharpe ratio and reports its Value at Risk, with an interactive efficient frontier.</p>
+          <p class="stack rise" style="--i:2">Python, NumPy, yfinance, Streamlit</p>
+          <a class="link rise" style="--i:3" href="https://github.com/atulvinod01/QuantitativePortfolioOptimization" target="_blank" rel="noopener">Source on GitHub</a>
+        </div>
+        <aside class="rise" style="--i:2">The chart at the top of this page is a small version of it. <a class="link" href="#top" style="margin-top:8px;display:block">Run it again</a></aside>
+      </article>
+
+      <article class="proj">
+        <div class="text">
+          <h3 class="rise">E-commerce customer analysis</h3>
+          <p class="rise" style="--i:1">RFM segmentation and cohort analysis on raw transactions: how recently each customer bought, how often, and how much. The output is a list of who to reward, who to win back and who to let go.</p>
+          <p class="rise" style="--i:2">The champions get loyalty offers. The at-risk group, once frequent and now quiet, gets the retention budget first.</p>
+          <p class="stack rise" style="--i:3">Python, SQLite, pandas, Seaborn</p>
+          <a class="link rise" style="--i:4" href="https://github.com/atulvinod01/E-CommerceSalesAnalysis" target="_blank" rel="noopener">Source on GitHub</a>
+        </div>
+        <div class="figure">
+          <div class="panel rise" style="--i:1">
+            <div class="rfm" role="img" aria-label="RFM segment map: frequency on the vertical axis, recency on the horizontal. Champions sit at high frequency and recent purchases, at risk at high frequency but long ago, new customers at low frequency and recent, lost at low frequency and long ago.">
+              <div class="yl">5</div><div class="c seg-risk" style="grid-column:span 2">At risk</div><div class="c seg-loyal">Loyal</div><div class="c seg-champ" style="grid-column:span 2;grid-row:span 2">Champions</div>
+              <div class="yl">4</div><div class="c seg-risk" style="grid-column:span 2">Can't lose them</div><div class="c seg-loyal">Loyal</div>
+              <div class="yl">3</div><div class="c seg-lost">Hibernating</div><div class="c seg-mid" style="grid-column:span 2">Need attention</div><div class="c seg-loyal" style="grid-column:span 2">Potential loyalists</div>
+              <div class="yl">2</div><div class="c seg-lost" style="grid-column:span 2;grid-row:span 2">Lost</div><div class="c seg-mid">About to sleep</div><div class="c seg-new" style="grid-column:span 2">Promising</div>
+              <div class="yl">1</div><div class="c seg-mid">About to sleep</div><div class="c seg-new" style="grid-column:span 2">New customers</div>
+              <div></div><div class="xl">1</div><div class="xl">2</div><div class="xl">3</div><div class="xl">4</div><div class="xl">5</div>
+            </div>
+          </div>
+          <p class="cap">The segment map: frequency score up the side, recency score along the bottom, 5 is best.</p>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section class="wrap about" id="about" aria-labelledby="about-title">
+    <h2 id="about-title" class="rise">About</h2>
+    <div class="about-grid">
+      <p class="big rise" style="--i:1">I started out writing software and moved toward the question software usually skips: what should we actually do with this number?</p>
+      <div class="body">
+        <p class="rise" style="--i:2">I'm doing an MBA after a computer science degree, so I sit between the people who build models and the people who have to act on them. Most of my work is in finance: risk, portfolios and markets.</p>
+        <p class="rise" style="--i:3">Right now I'm focused on machine learning in finance, and on making risk models readable by the people who sign off on them.</p>
+        <p class="rise" style="--i:4">Outside of datasets I read about behavioural economics and build side projects that probably won't make money but always teach me something. I'm an AWS Certified Cloud Practitioner, a Microsoft Office Specialist in Excel, and have completed Google AI Essentials.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="wrap tools" aria-labelledby="tools-title">
+    <h2 id="tools-title" class="rise">What I use</h2>
+    <div class="tools-grid">
+      <div>
+        <p class="rise" style="--i:1">The tools that show up in the work above, and where.</p>
+        <p class="rise" style="--i:2">Also: AWS, Excel, Git, Matplotlib.</p>
+      </div>
+      <div class="tbl-wrap rise" style="--i:2">
+        <table>
+          <thead><tr><td></td><th scope="col">Scanner</th><th scope="col">Risk</th><th scope="col">Portfolio</th><th scope="col">E-commerce</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">Python</th><td><span class="dot" aria-label="used"></span></td><td><span class="dot" aria-label="used"></span></td><td><span class="dot" aria-label="used"></span></td><td><span class="dot" aria-label="used"></span></td></tr>
+            <tr><th scope="row">pandas</th><td><span class="dot" aria-label="used"></span></td><td></td><td></td><td><span class="dot" aria-label="used"></span></td></tr>
+            <tr><th scope="row">NumPy</th><td></td><td></td><td><span class="dot" aria-label="used"></span></td><td></td></tr>
+            <tr><th scope="row">yfinance</th><td><span class="dot" aria-label="used"></span></td><td></td><td><span class="dot" aria-label="used"></span></td><td></td></tr>
+            <tr><th scope="row">SQL</th><td></td><td></td><td></td><td><span class="dot" aria-label="used"></span></td></tr>
+            <tr><th scope="row">scikit-learn</th><td></td><td><span class="dot" aria-label="used"></span></td><td></td><td></td></tr>
+            <tr><th scope="row">SHAP</th><td></td><td><span class="dot" aria-label="used"></span></td><td></td><td></td></tr>
+            <tr><th scope="row">Streamlit</th><td></td><td><span class="dot" aria-label="used"></span></td><td><span class="dot" aria-label="used"></span></td><td></td></tr>
+            <tr><th scope="row">Seaborn</th><td></td><td></td><td></td><td><span class="dot" aria-label="used"></span></td></tr>
+            <tr><th scope="row">Vercel</th><td><span class="dot" aria-label="used"></span></td><td></td><td></td><td></td></tr>
+            <tr><th scope="row">LLM APIs</th><td><span class="dot" aria-label="used"></span></td><td></td><td></td><td></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section class="contact" id="contact" aria-labelledby="contact-title">
+    <div class="wrap contact-grid">
+      <div>
+        <h2 id="contact-title" class="rise">Get in touch</h2>
+        <p class="rise" style="--i:1">About a role, a project, or a dataset you can't make sense of.</p>
+        <a class="mail rise" style="--i:2" href="mailto:atulvinod2001@gmail.com">atulvinod2001@gmail.com</a>
+      </div>
+      <ul class="social rise" style="--i:3">
+        <li><a href="https://www.linkedin.com/in/atul-vinod-9083b5225" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13zM7.12 20.45H3.56V9h3.56v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.73V1.73C24 .77 23.2 0 22.22 0z"/></svg>LinkedIn</a></li>
+        <li><a href="https://github.com/atulvinod01" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 .3a12 12 0 0 0-3.8 23.38c.6.12.83-.26.83-.57v-2.23c-3.34.73-4.04-1.42-4.04-1.42-.55-1.4-1.34-1.77-1.34-1.77-1.08-.74.09-.73.09-.73 1.2.09 1.84 1.24 1.84 1.24 1.07 1.83 2.8 1.3 3.49 1 .1-.78.42-1.31.76-1.61-2.67-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.14-.3-.54-1.52.1-3.18 0 0 1-.32 3.3 1.23a11.5 11.5 0 0 1 6 0c2.28-1.55 3.29-1.23 3.29-1.23.64 1.66.24 2.88.12 3.18a4.65 4.65 0 0 1 1.23 3.22c0 4.61-2.8 5.63-5.48 5.92.42.36.81 1.1.81 2.22v3.29c0 .32.21.7.82.58A12 12 0 0 0 12 .3"/></svg>GitHub</a></li>
+      </ul>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p class="big" aria-hidden="true">Atul Vinod</p>
+    <div class="meta"><span>© 2026 Atul Vinod</span><span>atulvinod.com</span></div>
+  </div>
+</footer>
+
+<script>
+// Entrances: content is visible without JS; .js hides it until in view.
+const io = new IntersectionObserver(es => es.forEach(e => {
+  if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+}), { rootMargin: '0px 0px -8% 0px' });
+document.querySelectorAll('.rise, .drivers').forEach(el => io.observe(el));
+
+// Monte Carlo efficient frontier. Assumed annual figures, demo only.
+const assets = [
+  { name: 'Nifty 50', mu: .12, sd: .18 },
+  { name: 'US equities', mu: .11, sd: .17 },
+  { name: 'Gold', mu: .08, sd: .14 },
+  { name: 'Govt bonds', mu: .07, sd: .04 },
+];
+const corr = [[1, .5, .05, .1], [.5, 1, .05, 0], [.05, .05, 1, 0], [.1, 0, 0, 1]];
+const RF = .065, N = 2000, W = 640, H = 400, P = { l: 52, r: 16, t: 16, b: 44 };
+const svg = document.getElementById('frontier');
+const NS = 'http://www.w3.org/2000/svg';
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+let pts = [];
+
+function simulate() {
+  const out = [];
+  for (let k = 0; k < N; k++) {
+    const w = assets.map(() => -Math.log(1 - Math.random()));
+    const s = w.reduce((a, b) => a + b);
+    for (let i = 0; i < w.length; i++) w[i] /= s;
+    let ret = 0, v = 0;
+    for (let i = 0; i < w.length; i++) {
+      ret += w[i] * assets[i].mu;
+      for (let j = 0; j < w.length; j++) v += w[i] * w[j] * assets[i].sd * assets[j].sd * corr[i][j];
+    }
+    const vol = Math.sqrt(v);
+    out.push({ w, ret, vol, sharpe: (ret - RF) / vol });
+  }
+  return out;
+}
+
+const el = (tag, attrs, parent = svg) => {
+  const n = document.createElementNS(NS, tag);
+  for (const k in attrs) n.setAttribute(k, attrs[k]);
+  parent.appendChild(n); return n;
+};
+const pct = x => (x * 100).toFixed(1) + '%';
+
+function draw() {
+  pts = pts.concat(simulate());
+  svg.textContent = '';
+  const x0 = .03, x1 = .19, y0 = .065, y1 = .125;
+  const X = v => P.l + (v - x0) / (x1 - x0) * (W - P.l - P.r);
+  const Y = r => H - P.b - (r - y0) / (y1 - y0) * (H - P.t - P.b);
+  for (let v = .04; v <= .18; v += .04) {
+    el('line', { class: 'grid-line', x1: X(v), x2: X(v), y1: P.t, y2: H - P.b });
+    el('text', { class: 'axis', x: X(v), y: H - P.b + 20, 'text-anchor': 'middle' }).textContent = Math.round(v * 100) + '%';
+  }
+  for (let r = .07; r <= .12; r += .01) {
+    el('line', { class: 'grid-line', x1: P.l, x2: W - P.r, y1: Y(r), y2: Y(r) });
+    el('text', { class: 'axis', x: P.l - 8, y: Y(r) + 4, 'text-anchor': 'end' }).textContent = Math.round(r * 100) + '%';
+  }
+  el('text', { class: 'axis', x: W - P.r, y: H - 6, 'text-anchor': 'end' }).textContent = 'Volatility';
+  el('text', { class: 'axis', x: P.l, y: P.t - 2 + 10, 'text-anchor': 'start', dx: 8 }).textContent = 'Return';
+
+  const g = el('g', {});
+  const fresh = pts.length - N;
+  pts.forEach((p, i) => {
+    const c = el('circle', { class: 'pt', cx: X(p.vol).toFixed(1), cy: Y(p.ret).toFixed(1), r: 2.4 }, g);
+    if (!reduce && i >= fresh) { c.style.opacity = 0; c.style.transition = 'opacity .4s'; setTimeout(() => c.style.opacity = '', (i - fresh) * .45); }
+  });
+
+  // Efficient frontier: from the min-volatility point, keep each point that beats every lower-volatility return.
+  const sorted = [...pts].sort((a, b) => a.vol - b.vol);
+  const edge = []; let best = -1;
+  for (const p of sorted) if (p.ret > best) { edge.push(p); best = p.ret; }
+  const path = el('polyline', { class: 'edge', points: edge.map(p => X(p.vol).toFixed(1) + ',' + Y(p.ret).toFixed(1)).join(' ') });
+  if (!reduce) {
+    const len = path.getTotalLength();
+    path.style.strokeDasharray = len; path.style.strokeDashoffset = len;
+    path.getBoundingClientRect();
+    path.style.transition = 'stroke-dashoffset 1.2s cubic-bezier(.2,.7,.2,1) .6s';
+    path.style.strokeDashoffset = 0;
+  }
+
+  const top = pts.reduce((a, b) => b.sharpe > a.sharpe ? b : a);
+  el('circle', { class: 'best', cx: X(top.vol), cy: Y(top.ret), r: 8 });
+  el('text', { class: 'best-label', x: X(top.vol) + 14, y: Y(top.ret) + 18 }).textContent = 'Best Sharpe';
+
+  document.getElementById('o-sharpe').textContent = top.sharpe.toFixed(2);
+  document.getElementById('o-ret').textContent = pct(top.ret);
+  document.getElementById('o-vol').textContent = pct(top.vol);
+  document.getElementById('o-w').innerHTML = 'Of ' + pts.length.toLocaleString('en-IN') + ' portfolios, the best holds ' +
+    top.w.map((w, i) => `<b>${Math.round(w * 100)}%</b> ${assets[i].name}`).join(', ') + '.';
+  document.getElementById('rerun').textContent = 'Run 2,000 more';
+}
+draw();
+document.getElementById('rerun').addEventListener('click', draw);
+</script>
 </body>
-
 </html>
